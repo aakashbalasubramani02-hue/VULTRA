@@ -16,7 +16,50 @@ class ErrorResponse(BaseModel):
     detail: Optional[Any] = Field(None, description="Optional diagnostic details")
 
 
-# --- Profiles ---
+# --- Assets & Technologies ---
+class AssetSchema(BaseModel):
+    asset_id: str = Field(..., description="Unique asset identifier, e.g. AST-001")
+    name: str = Field(..., description="Asset display name, e.g. Production Web Server")
+    vendor: str = Field("", description="Vendor name, e.g. Apache")
+    product: str = Field(..., description="Product identifier, e.g. Apache HTTP Server")
+    version: Optional[str] = Field(None, description="Installed software version, e.g. 2.4.49 or unknown")
+    environment: str = Field("production", description="Environment: production, staging, development, testing")
+    exposure: str = Field("internet-facing", description="Network exposure: internet-facing, internal, restricted, air-gapped")
+    importance: str = Field("critical", description="Criticality: critical, high, medium, low")
+
+
+class AssetCreateRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=120, description="Asset display name")
+    product: str = Field(..., min_length=2, max_length=120, description="Product name")
+    vendor: Optional[str] = Field("", description="Vendor name")
+    version: Optional[str] = Field(None, description="Installed software version or unknown")
+    environment: str = Field("production", description="Environment: production, staging, development, testing")
+    exposure: str = Field("internet-facing", description="Exposure: internet-facing, internal, restricted, air-gapped")
+    importance: str = Field("critical", description="Criticality: critical, high, medium, low")
+
+
+class AssetUpdateRequest(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=120)
+    product: Optional[str] = Field(None, min_length=2, max_length=120)
+    vendor: Optional[str] = None
+    version: Optional[str] = None
+    environment: Optional[str] = None
+    exposure: Optional[str] = None
+    importance: Optional[str] = None
+
+
+class AssetListResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation unique identifier")
+    assets: list[AssetSchema] = Field(..., description="List of registered assets")
+    total_count: int = Field(..., description="Total count of assets")
+
+
+class AssetDetailResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation unique identifier")
+    asset: AssetSchema = Field(..., description="Asset details")
+    matched_vulnerabilities_count: int = Field(0, description="Number of matching CVEs in dataset")
+
+
 class TechnologySchema(BaseModel):
     vendor: str = Field("", description="Technology vendor name")
     product: str = Field(..., description="Product identifier")
@@ -24,6 +67,9 @@ class TechnologySchema(BaseModel):
     service: str = Field("", description="Associated business service")
     exposure: str = Field("internal", description="Exposure category: internet-facing, internal, air-gapped")
     importance: str = Field("normal", description="Business criticality: critical, high, medium, low")
+    asset_id: Optional[str] = Field(None, description="Asset unique identifier")
+    name: Optional[str] = Field(None, description="Asset display name")
+    environment: str = Field("production", description="Deployment environment")
 
 
 class WeightModifiersSchema(BaseModel):
@@ -54,6 +100,8 @@ class ProfileDetailResponse(BaseModel):
     weights: WeightModifiersSchema = Field(..., description="Active weight modifiers")
     technologies: list[TechnologySchema] = Field(..., description="Asset inventory")
     critical_products: list[str] = Field(default_factory=list, description="Critical products list")
+    assets: list[AssetSchema] = Field(default_factory=list, description="Structured asset inventory")
+
 
 
 class OrganizationCreateRequest(BaseModel):
@@ -117,12 +165,19 @@ class ProvenanceSchema(BaseModel):
     source_cvss: float = Field(..., description="Source CVSS score")
     source_kev: bool = Field(..., description="Source KEV boolean")
     source_epss: float = Field(..., description="Source EPSS float")
+    matched_asset_id: Optional[str] = Field(None, description="Matched organisation asset ID")
+    matched_asset_name: Optional[str] = Field(None, description="Matched organisation asset name")
+    matched_environment: Optional[str] = Field("production", description="Matched deployment environment")
 
 
 class TechnologyInfoSchema(BaseModel):
     vendor: str = Field("", description="Vendor name")
     product: str = Field(..., description="Product name")
     version: Optional[str] = Field(None, description="Installed version or unknown")
+    asset_id: Optional[str] = Field(None, description="Matched asset unique ID")
+    asset_name: Optional[str] = Field(None, description="Matched asset display name")
+    environment: str = Field("production", description="Asset deployment environment")
+
 
 
 class TriageItemSchema(BaseModel):

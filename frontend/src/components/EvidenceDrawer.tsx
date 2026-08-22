@@ -195,7 +195,7 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
                   <div className="flex items-center justify-between border-b border-[#1E2530] pb-2">
                     <div className="flex items-center gap-2 text-xs font-bold text-[#F5F7FA] uppercase tracking-widest font-label-caps">
                       <Server className="h-4 w-4 text-[#00E5FF]" />
-                      <span>2. Asset & Exposure Context</span>
+                      <span>2. Matched Asset & Environmental Context</span>
                     </div>
                     <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00daf3]">
                       DEPLOYMENT
@@ -203,12 +203,28 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
                   </div>
 
                   <div className="p-4 bg-[#0c0e12] border border-[#1E2530] text-xs space-y-2.5">
+                    {evidence.asset_context.asset_id && (
+                      <div className="flex justify-between py-1 border-b border-[#1E2530]">
+                        <span className="text-[#606D7A] font-label-caps text-[10px]">ASSET IDENTIFIER</span>
+                        <span className="font-bold text-[#00E5FF] font-mono">
+                          {evidence.asset_context.asset_id}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex justify-between py-1 border-b border-[#1E2530]">
-                      <span className="text-[#606D7A] font-label-caps text-[10px]">DEPLOYED SERVICE</span>
+                      <span className="text-[#606D7A] font-label-caps text-[10px]">ASSET NAME / SERVICE</span>
                       <span className="font-semibold text-[#F5F7FA]">
-                        {evidence.asset_context.service || 'Not specified in profile'}
+                        {evidence.asset_context.asset_name || evidence.asset_context.service || 'Not specified in profile'}
                       </span>
                     </div>
+                    {evidence.asset_context.environment && (
+                      <div className="flex justify-between py-1 border-b border-[#1E2530]">
+                        <span className="text-[#606D7A] font-label-caps text-[10px]">ENVIRONMENT</span>
+                        <span className="font-bold uppercase text-[#F5F7FA] font-mono">
+                          {evidence.asset_context.environment}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex justify-between py-1 border-b border-[#1E2530]">
                       <span className="text-[#606D7A] font-label-caps text-[10px]">PERIMETER EXPOSURE</span>
                       <span className="font-bold uppercase text-[#00E5FF] font-mono">

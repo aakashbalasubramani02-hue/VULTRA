@@ -149,6 +149,7 @@ def match_vulnerability(
 
     # Check against structured technologies
     if organisation.technologies:
+        best_result = None
         for tech in organisation.technologies:
             if target_product == normalize_product_name(tech.product):
                 outcome, reason_code, explanation = compare_versions(
@@ -157,7 +158,7 @@ def match_vulnerability(
                     vulnerability.version_note,
                 )
                 is_matched = outcome in (MatchOutcome.MATCH, MatchOutcome.NEEDS_VERIFICATION)
-                return MatchResult(
+                res = MatchResult(
                     outcome=outcome,
                     reason_code=reason_code,
                     match_reason=explanation,
@@ -165,6 +166,13 @@ def match_vulnerability(
                     matched=is_matched,
                     critical_product=tech.product if is_matched else None,
                 )
+                if outcome == MatchOutcome.MATCH:
+                    return res
+                if best_result is None or (not best_result.matched and is_matched):
+                    best_result = res
+        if best_result is not None:
+            return best_result
+
 
     # Fallback to critical_products for backwards compatibility
     if organisation.critical_products:

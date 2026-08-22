@@ -25,6 +25,7 @@ interface CommandCenterViewProps {
   onGoToTriage: () => void;
   onGoToWhyNot: () => void;
   onGoToCompare: () => void;
+  onGoToInventory?: () => void;
   isLoading: boolean;
 }
 
@@ -38,6 +39,7 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
   onGoToTriage,
   onGoToWhyNot,
   onGoToCompare,
+  onGoToInventory,
   isLoading,
 }) => {
   return (
@@ -189,9 +191,19 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
                   Sector: <strong className="text-[#bac9cc]">{profileDetail.sector}</strong> • Risk Appetite: <strong className="text-[#bac9cc]">{profileDetail.risk_appetite}</strong>
                 </p>
               </div>
-              <span className="text-xs font-mono px-2.5 py-1 bg-[#0c0e12] text-[#00E5FF] border border-[#3b494c] font-bold">
-                {profileDetail.technologies.length} TECH STACKS
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-mono px-2.5 py-1 bg-[#0c0e12] text-[#00E5FF] border border-[#3b494c] font-bold">
+                  {profileDetail.technologies.length} TECH STACKS
+                </span>
+                {onGoToInventory && (
+                  <button
+                    onClick={onGoToInventory}
+                    className="text-xs font-mono px-3 py-1 bg-[#00E5FF]/10 hover:bg-[#00E5FF]/20 text-[#00E5FF] border border-[#00E5FF]/40 font-bold uppercase transition-colors cursor-pointer"
+                  >
+                    Manage Inventory →
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

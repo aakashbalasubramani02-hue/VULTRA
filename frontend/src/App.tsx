@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { NavView, Navbar } from './components/Navbar';
 import { CommandCenterView } from './views/CommandCenterView';
 import { TriageView } from './views/TriageView';
+import { InventoryView } from './views/InventoryView';
 import { CompareView } from './views/CompareView';
 import { WhyNotView } from './views/WhyNotView';
 import { MethodologyView } from './views/MethodologyView';
@@ -143,6 +144,7 @@ export const App: React.FC = () => {
               onGoToTriage={() => setCurrentView('triage')}
               onGoToWhyNot={() => setCurrentView('whynot')}
               onGoToCompare={() => setCurrentView('compare')}
+              onGoToInventory={() => setCurrentView('inventory')}
               isLoading={isLoading}
             />
           )}
@@ -159,6 +161,14 @@ export const App: React.FC = () => {
               error={apiError}
               onRefresh={() => fetchTriageForOrg(selectedOrgId)}
               onGoToCompare={() => setCurrentView('compare')}
+            />
+          )}
+
+          {currentView === 'inventory' && (
+            <InventoryView
+              key="inventory"
+              selectedProfileId={selectedOrgId}
+              onNavigateToTriage={() => setCurrentView('triage')}
             />
           )}
 

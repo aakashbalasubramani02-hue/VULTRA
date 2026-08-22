@@ -17,6 +17,11 @@ from src.models import (
 )
 from src.ranker import rank_personalized, rank_by_cvss
 from backend.schemas.api_models import (
+    AssetCreateRequest,
+    AssetDetailResponse,
+    AssetListResponse,
+    AssetSchema,
+    AssetUpdateRequest,
     ComparisonDifferenceSchema,
     ComparisonResponse,
     EvidenceResponse,
@@ -113,8 +118,25 @@ class TriageService:
                 service=t.service,
                 exposure=t.exposure,
                 importance=t.importance,
+                asset_id=t.asset_id or f"AST-{idx+1:03d}",
+                name=t.name or t.service or f"{t.product} Asset",
+                environment=t.environment or "production",
             )
-            for t in p.technologies
+            for idx, t in enumerate(p.technologies)
+        ]
+
+        asset_schemas = [
+            AssetSchema(
+                asset_id=t.asset_id or f"AST-{idx+1:03d}",
+                name=t.name or t.service or f"{t.product} Asset",
+                vendor=t.vendor,
+                product=t.product,
+                version=t.version,
+                environment=t.environment or "production",
+                exposure=t.exposure or "internal",
+                importance=t.importance or "critical",
+            )
+            for idx, t in enumerate(p.technologies)
         ]
 
         return ProfileDetailResponse(
@@ -125,6 +147,7 @@ class TriageService:
             weights=weights_schema,
             technologies=tech_schemas,
             critical_products=list(p.critical_products),
+            assets=asset_schemas,
         )
 
     def get_catalogue_products(self) -> ProductCatalogueResponse:
@@ -348,6 +371,237 @@ class TriageService:
         self._save_profiles_raw_json(raw_data)
         return True
 
+    def list_assets(self, org_id: str) -> Optional[AssetListResponse]:
+        """List all registered assets for an organisation."""
+        org = self.get_profile(org_id)
+        if not org:
+            return None
+
+        assets = [
+            AssetSchema(
+                asset_id=t.asset_id or f"AST-{idx+1:03d}",
+                name=t.name or t.service or f"{t.product} Asset",
+                vendor=t.vendor,
+                product=t.product,
+                version=t.version,
+                environment=t.environment or "production",
+                exposure=t.exposure or "internal",
+                importance=t.importance or "critical",
+            )
+            for idx, t in enumerate(org.technologies)
+        ]
+
+        return AssetListResponse(
+            org_id=org.org_id,
+            assets=assets,
+            total_count=len(assets),
+        )
+
+    def get_asset(self, org_id: str, asset_id: str) -> Optional[AssetDetailResponse]:
+        """Get detail for a specific asset including matching vulnerability count."""
+        org = self.get_profile(org_id)
+        if not org:
+            return None
+
+        target_tech = None
+        for idx, t in enumerate(org.technologies):
+            aid = t.asset_id or f"AST-{idx+1:03d}"
+            if aid.upper() == asset_id.upper():
+                target_tech = t
+                break
+
+        if not target_tech:
+            return None
+
+        asset_schema = AssetSchema(
+            asset_id=target_tech.asset_id or asset_id,
+            name=target_tech.name or target_tech.service or f"{target_tech.product} Asset",
+            vendor=target_tech.vendor,
+            product=target_tech.product,
+            version=target_tech.version,
+            environment=target_tech.environment or "production",
+            exposure=target_tech.exposure or "internal",
+            importance=target_tech.importance or "critical",
+        )
+
+        from src.matcher import match_vulnerability
+        vulns = self.get_vulnerabilities()
+        matched_count = 0
+        for v in vulns:
+            res = match_vulnerability(v, org)
+            if res.matched and res.matched_technology and res.matched_technology.product == target_tech.product:
+                matched_count += 1
+
+        return AssetDetailResponse(
+            org_id=org.org_id,
+            asset=asset_schema,
+            matched_vulnerabilities_count=matched_count,
+        )
+
+    def create_asset(self, org_id: str, req: AssetCreateRequest) -> AssetDetailResponse:
+        """Register a new technology asset within an organisation profile."""
+        raw_data = self._read_profiles_raw_json()
+        org_list = raw_data.get("organizations", [])
+
+        target_idx = None
+        for idx, org in enumerate(org_list):
+            if org.get("org_id", "").upper() == org_id.upper():
+                target_idx = idx
+                break
+
+        if target_idx is None:
+            raise ValueError(f"ORGANISATION_NOT_FOUND: Organisation '{org_id}' does not exist.")
+
+        current_org = org_list[target_idx]
+        current_techs = current_org.get("technologies", [])
+
+        cleaned_name = req.name.strip()
+        cleaned_prod = canonicalize_product_name(req.product.strip())
+        cleaned_version = req.version.strip() if req.version else "unknown"
+        cleaned_vendor = req.vendor.strip() if req.vendor else "Standard Vendor"
+        cleaned_env = req.environment.strip().lower() if req.environment else "production"
+        cleaned_exp = req.exposure.strip().lower() if req.exposure else "internet-facing"
+        cleaned_imp = req.importance.strip().lower() if req.importance else "critical"
+
+        # Check duplicate asset in this organisation
+        for t in current_techs:
+            t_name = t.get("name", "").strip().lower()
+            t_prod = canonicalize_product_name(t.get("product", "")).lower()
+            t_ver = (t.get("version", "") or "unknown").strip().lower()
+            if t_name == cleaned_name.lower() or (t_prod == cleaned_prod.lower() and t_ver == cleaned_version.lower() and t_name == cleaned_name.lower()):
+                raise ValueError(f"ASSET_EXISTS: Asset '{cleaned_name}' with product '{cleaned_prod}' and version '{cleaned_version}' already exists in this organisation.")
+
+        # Generate unique asset ID AST-00X
+        max_num = 0
+        for idx, t in enumerate(current_techs):
+            aid = t.get("asset_id", "")
+            m = re.match(r"^AST-(\d+)$", aid, re.IGNORECASE)
+            if m:
+                max_num = max(max_num, int(m.group(1)))
+            else:
+                max_num = max(max_num, idx + 1)
+        new_asset_id = f"AST-{max_num + 1:03d}"
+
+        new_tech_record = {
+            "asset_id": new_asset_id,
+            "name": cleaned_name,
+            "vendor": cleaned_vendor,
+            "product": cleaned_prod,
+            "version": cleaned_version,
+            "environment": cleaned_env,
+            "exposure": cleaned_exp,
+            "importance": cleaned_imp,
+            "service": cleaned_name,
+        }
+
+        current_techs.append(new_tech_record)
+        current_org["technologies"] = current_techs
+
+        # Synchronize critical products list
+        crit_prods = current_org.get("critical_products", [])
+        if cleaned_prod not in crit_prods:
+            crit_prods.append(cleaned_prod)
+        current_org["critical_products"] = crit_prods
+
+        org_list[target_idx] = current_org
+        raw_data["organizations"] = org_list
+        self._save_profiles_raw_json(raw_data)
+
+        detail = self.get_asset(org_id, new_asset_id)
+        if not detail:
+            raise RuntimeError("FAILED_PERSISTENCE: Failed to load newly created asset.")
+        return detail
+
+    def update_asset(self, org_id: str, asset_id: str, req: AssetUpdateRequest) -> Optional[AssetDetailResponse]:
+        """Update an existing asset in an organisation."""
+        raw_data = self._read_profiles_raw_json()
+        org_list = raw_data.get("organizations", [])
+
+        target_org_idx = None
+        for idx, org in enumerate(org_list):
+            if org.get("org_id", "").upper() == org_id.upper():
+                target_org_idx = idx
+                break
+
+        if target_org_idx is None:
+            return None
+
+        current_org = org_list[target_org_idx]
+        current_techs = current_org.get("technologies", [])
+
+        target_tech_idx = None
+        for idx, t in enumerate(current_techs):
+            aid = t.get("asset_id") or f"AST-{idx+1:03d}"
+            if aid.upper() == asset_id.upper():
+                target_tech_idx = idx
+                break
+
+        if target_tech_idx is None:
+            return None
+
+        target_tech = current_techs[target_tech_idx]
+
+        if req.name is not None:
+            target_tech["name"] = req.name.strip()
+            target_tech["service"] = req.name.strip()
+        if req.vendor is not None:
+            target_tech["vendor"] = req.vendor.strip()
+        if req.product is not None:
+            target_tech["product"] = canonicalize_product_name(req.product.strip())
+        if req.version is not None:
+            target_tech["version"] = req.version.strip() if req.version else "unknown"
+        if req.environment is not None:
+            target_tech["environment"] = req.environment.strip().lower()
+        if req.exposure is not None:
+            target_tech["exposure"] = req.exposure.strip().lower()
+        if req.importance is not None:
+            target_tech["importance"] = req.importance.strip().lower()
+
+        current_techs[target_tech_idx] = target_tech
+        current_org["technologies"] = current_techs
+
+        current_org["critical_products"] = list(set(t["product"] for t in current_techs if "product" in t))
+
+        org_list[target_org_idx] = current_org
+        raw_data["organizations"] = org_list
+        self._save_profiles_raw_json(raw_data)
+
+        return self.get_asset(org_id, asset_id)
+
+    def delete_asset(self, org_id: str, asset_id: str) -> bool:
+        """Delete an asset from an organisation profile."""
+        raw_data = self._read_profiles_raw_json()
+        org_list = raw_data.get("organizations", [])
+
+        target_org_idx = None
+        for idx, org in enumerate(org_list):
+            if org.get("org_id", "").upper() == org_id.upper():
+                target_org_idx = idx
+                break
+
+        if target_org_idx is None:
+            return False
+
+        current_org = org_list[target_org_idx]
+        current_techs = current_org.get("technologies", [])
+
+        initial_len = len(current_techs)
+        current_techs = [
+            t for idx, t in enumerate(current_techs)
+            if (t.get("asset_id") or f"AST-{idx+1:03d}").upper() != asset_id.upper()
+        ]
+
+        if len(current_techs) == initial_len:
+            return False
+
+        current_org["technologies"] = current_techs
+        current_org["critical_products"] = list(set(t["product"] for t in current_techs if "product" in t))
+
+        org_list[target_org_idx] = current_org
+        raw_data["organizations"] = org_list
+        self._save_profiles_raw_json(raw_data)
+        return True
+
     def _convert_scored_vuln_to_schema(self, item: ScoredVulnerability) -> TriageItemSchema:
         """Map internal ScoredVulnerability dataclass to API TriageItemSchema."""
         v = item.vulnerability
@@ -359,7 +613,10 @@ class TriageService:
         vendor = tech.vendor if tech else ""
         prod = tech.product if tech else v.product_name
         version = tech.version if tech else None
-        svc = tech.service if tech and tech.service else prod
+        asset_id = tech.asset_id if tech else None
+        asset_name = tech.name if tech else (tech.service if tech and tech.service else f"{prod} Host")
+        env = tech.environment if tech else "production"
+        svc = tech.service if tech and tech.service else (asset_name or prod)
         exp = tech.exposure if tech and tech.exposure else "internal"
         imp = tech.importance if tech and tech.importance else "normal"
 
@@ -385,6 +642,9 @@ class TriageService:
             source_cvss=v.cvss_base_score,
             source_kev=v.cisa_kev,
             source_epss=v.first_epss,
+            matched_asset_id=asset_id,
+            matched_asset_name=asset_name,
+            matched_environment=env,
         )
 
         title = item.explanation.title if item.explanation else f"Security Vulnerability in {v.product_name}"
@@ -397,7 +657,14 @@ class TriageService:
             priority=item.priority.value,
             score=b.score_100,
             title=title,
-            technology=TechnologyInfoSchema(vendor=vendor, product=prod, version=version),
+            technology=TechnologyInfoSchema(
+                vendor=vendor,
+                product=prod,
+                version=version,
+                asset_id=asset_id,
+                asset_name=asset_name,
+                environment=env,
+            ),
             service=svc,
             exposure=exp,
             importance=imp,
@@ -502,9 +769,12 @@ class TriageService:
         }
 
         asset_context = {
+            "asset_id": tech.asset_id if tech else None,
+            "asset_name": tech.name if tech else (tech.service if tech and tech.service else None),
             "matched_technology": tech.product if tech else None,
             "vendor": tech.vendor if tech else None,
             "installed_version": tech.version if tech else None,
+            "environment": tech.environment if tech else "production",
             "service": tech.service if tech else None,
             "exposure": tech.exposure if tech else "N/A",
             "importance": tech.importance if tech else "N/A",

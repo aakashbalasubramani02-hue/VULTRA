@@ -1,5 +1,9 @@
 import {
   AIExplanationResponse,
+  AssetCreateRequest,
+  AssetDetailResponse,
+  AssetListResponse,
+  AssetUpdateRequest,
   ComparisonResponse,
   EvidenceResponse,
   HealthResponse,
@@ -130,7 +134,51 @@ class ApiClient {
       }
     );
   }
+
+  async getAssets(orgId: string): Promise<AssetListResponse> {
+    return this.request<AssetListResponse>(`/organizations/${encodeURIComponent(orgId)}/assets`);
+  }
+
+  async getAssetDetail(orgId: string, assetId: string): Promise<AssetDetailResponse> {
+    return this.request<AssetDetailResponse>(
+      `/organizations/${encodeURIComponent(orgId)}/assets/${encodeURIComponent(assetId)}`
+    );
+  }
+
+  async createAsset(orgId: string, data: AssetCreateRequest): Promise<AssetDetailResponse> {
+    return this.request<AssetDetailResponse>(
+      `/organizations/${encodeURIComponent(orgId)}/assets`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
+  }
+
+  async updateAsset(
+    orgId: string,
+    assetId: string,
+    data: AssetUpdateRequest
+  ): Promise<AssetDetailResponse> {
+    return this.request<AssetDetailResponse>(
+      `/organizations/${encodeURIComponent(orgId)}/assets/${encodeURIComponent(assetId)}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }
+    );
+  }
+
+  async deleteAsset(orgId: string, assetId: string): Promise<{ status: string; message: string }> {
+    return this.request<{ status: string; message: string }>(
+      `/organizations/${encodeURIComponent(orgId)}/assets/${encodeURIComponent(assetId)}`,
+      {
+        method: 'DELETE',
+      }
+    );
+  }
 }
 
 export const api = new ApiClient();
+
 

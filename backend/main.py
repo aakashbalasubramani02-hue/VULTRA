@@ -8,6 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from backend.routes import (
     ai_router,
     analysis_router,
+    assets_router,
     comparison_router,
     evidence_router,
     health_router,
@@ -71,6 +72,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 # Register API Routers under /api
 app.include_router(health_router, prefix="/api")
 app.include_router(profiles_router, prefix="/api")
+app.include_router(assets_router, prefix="/api")
 app.include_router(triage_router, prefix="/api")
 app.include_router(evidence_router, prefix="/api")
 app.include_router(analysis_router, prefix="/api")

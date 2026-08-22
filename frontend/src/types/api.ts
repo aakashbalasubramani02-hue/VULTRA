@@ -8,6 +8,49 @@ export interface HealthResponse {
   version: string;
 }
 
+export interface Asset {
+  asset_id: string;
+  name: string;
+  vendor: string;
+  product: string;
+  version?: string | null;
+  environment: string;
+  exposure: string;
+  importance: string;
+}
+
+export interface AssetCreateRequest {
+  name: string;
+  product: string;
+  vendor?: string;
+  version?: string | null;
+  environment?: string;
+  exposure?: string;
+  importance?: string;
+}
+
+export interface AssetUpdateRequest {
+  name?: string;
+  product?: string;
+  vendor?: string;
+  version?: string | null;
+  environment?: string;
+  exposure?: string;
+  importance?: string;
+}
+
+export interface AssetListResponse {
+  org_id: string;
+  assets: Asset[];
+  total_count: number;
+}
+
+export interface AssetDetailResponse {
+  org_id: string;
+  asset: Asset;
+  matched_vulnerabilities_count: number;
+}
+
 export interface Technology {
   vendor: string;
   product: string;
@@ -15,6 +58,9 @@ export interface Technology {
   service: string;
   exposure: string;
   importance: string;
+  asset_id?: string | null;
+  name?: string | null;
+  environment?: string;
 }
 
 export interface WeightModifiers {
@@ -45,6 +91,7 @@ export interface ProfileDetailResponse {
   weights: WeightModifiers;
   technologies: Technology[];
   critical_products: string[];
+  assets?: Asset[];
 }
 
 export interface OrganizationCreateRequest {
@@ -107,13 +154,20 @@ export interface Provenance {
   source_cvss: number;
   source_kev: boolean;
   source_epss: number;
+  matched_asset_id?: string | null;
+  matched_asset_name?: string | null;
+  matched_environment?: string | null;
 }
 
 export interface TechnologyInfo {
   vendor: string;
   product: string;
   version?: string | null;
+  asset_id?: string | null;
+  asset_name?: string | null;
+  environment?: string;
 }
+
 
 export interface TriageItem {
   rank: number;
@@ -168,9 +222,12 @@ export interface EvidenceResponse {
     is_matched: boolean;
   };
   asset_context: {
+    asset_id?: string | null;
+    asset_name?: string | null;
     matched_technology?: string | null;
     vendor?: string | null;
     installed_version?: string | null;
+    environment?: string | null;
     service?: string | null;
     exposure: string;
     importance: string;

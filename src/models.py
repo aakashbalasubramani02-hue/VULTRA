@@ -49,6 +49,10 @@ class TechnologyProfile:
     service: str = ""
     exposure: str = "internal"
     importance: str = "normal"
+    asset_id: Optional[str] = None
+    name: Optional[str] = None
+    environment: str = "production"
+
 
 
 @dataclass(frozen=True)

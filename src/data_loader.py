@@ -78,20 +78,27 @@ def load_profiles(path: Path | str = DATA / 'profiles.json') -> list[Organizatio
             )
 
             technologies = []
-            if 'technologies' in r and isinstance(r['technologies'], list):
-                for t in r['technologies']:
+            asset_items = r.get('assets', r.get('technologies', []))
+            if isinstance(asset_items, list) and len(asset_items) > 0:
+                for idx, t in enumerate(asset_items):
+                    aid = t.get('asset_id') or f"AST-{idx+1:03d}"
+                    aname = t.get('name') or t.get('service') or f"{t['product']} Deployment"
+                    env = t.get('environment', 'production').strip()
                     technologies.append(
                         TechnologyProfile(
                             product=t['product'].strip(),
                             vendor=t.get('vendor', '').strip(),
                             version=t.get('version', '').strip() or None,
-                            service=t.get('service', '').strip(),
+                            service=t.get('service', '').strip() or aname,
                             exposure=t.get('exposure', 'internal').strip(),
                             importance=t.get('importance', 'normal').strip(),
+                            asset_id=aid,
+                            name=aname,
+                            environment=env,
                         )
                     )
             elif 'critical_products' in r and isinstance(r['critical_products'], list):
-                for p in r['critical_products']:
+                for idx, p in enumerate(r['critical_products']):
                     technologies.append(
                         TechnologyProfile(
                             product=p.strip(),
@@ -100,6 +107,9 @@ def load_profiles(path: Path | str = DATA / 'profiles.json') -> list[Organizatio
                             service=p.strip(),
                             exposure='internet-facing',
                             importance='critical',
+                            asset_id=f"AST-{idx+1:03d}",
+                            name=f"{p.strip()} Production Asset",
+                            environment='production',
                         )
                     )
 
