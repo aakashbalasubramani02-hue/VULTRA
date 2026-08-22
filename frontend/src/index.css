@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#080c14] text-slate-100 font-sans antialiased selection:bg-cyan-500/30 selection:text-cyan-200;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Accessible focus defaults */
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible {
+    @apply outline-none ring-2 ring-cyan-400/80 ring-offset-2 ring-offset-slate-950;
+  }
+}
+
+/* Custom sleek scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080c14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Subtle ambient cyber background grid */
+.cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(51, 65, 85, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(51, 65, 85, 0.08) 1px, transparent 1px);
+}
+
+/* Glassmorphism surfaces */
+.glass-panel {
+  background: rgba(13, 20, 36, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+.glass-panel-glow {
+  background: rgba(13, 20, 36, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.15);
+}
+
+.hero-card-glow {
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  box-shadow: 0 0 30px -8px rgba(6, 182, 212, 0.15), inset 0 1px 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Layer Badges */
+.badge-source {
+  @apply px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-blue-500/15 text-blue-300 border border-blue-500/30;
+}
+
+.badge-decision {
+  @apply px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30;
+}
+
+.badge-explanation {
+  @apply px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-300 border border-indigo-500/30;
+}
+
+.badge-provenance {
+  @apply px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-500/30;
+}
