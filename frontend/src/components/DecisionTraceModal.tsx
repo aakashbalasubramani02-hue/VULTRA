@@ -119,7 +119,7 @@ export const DecisionTraceModal: React.FC<DecisionTraceModalProps> = ({
     {
       id: 'decision',
       step: '06',
-      title: 'NEXORA DECISION',
+      title: 'VULTRA DECISION',
       badge: `RANK #${item.rank} (${item.priority})`,
       icon: Activity,
       color: '#FF3B30',
@@ -188,7 +188,7 @@ export const DecisionTraceModal: React.FC<DecisionTraceModalProps> = ({
                 Deterministic Decision Trace (8 Evidence Stages)
               </div>
               <h2 className="text-xl font-bold text-[#F5F7FA]">
-                How NEXORA Arrived at Decision #{item.rank} for {item.cve_id}
+                How VULTRA Arrived at Decision #{item.rank} for {item.cve_id}
               </h2>
             </div>
           </div>
