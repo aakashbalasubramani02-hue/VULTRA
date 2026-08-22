@@ -323,3 +323,83 @@ class AIExplanationResponse(BaseModel):
     ai: AICopilotMetadataSchema = Field(..., description="AI runtime provenance metadata")
     source_bound: bool = Field(True, description="True indicates explanation is bound strictly to supplied source facts")
     fact_guard: FactGuardStatusSchema = Field(..., description="Fact guard audit result")
+
+
+# --- Remediation Workspace (Phase 9) ---
+class RemediationNoteSchema(BaseModel):
+    note_id: str = Field(..., description="Unique note identifier, e.g. NOT-001")
+    author: str = Field("Security Team", description="Author of the note")
+    content: str = Field(..., description="Plain-text note content")
+    created_at: str = Field(..., description="ISO 8601 creation timestamp")
+
+
+class RemediationActivitySchema(BaseModel):
+    activity_id: str = Field(..., description="Unique activity log identifier, e.g. ACT-001")
+    action: str = Field(..., description="Action name: CREATED, STATUS_CHANGED, OWNER_ASSIGNED, NOTE_ADDED, DUE_DATE_SET, RESOLVED")
+    details: str = Field(..., description="Descriptive audit trail entry")
+    author: str = Field("Security Operations", description="Actor recording the activity")
+    timestamp: str = Field(..., description="ISO 8601 timestamp")
+
+
+class RemediationRecordSchema(BaseModel):
+    remediation_id: str = Field(..., description="Unique remediation identifier, e.g. REM-001")
+    org_id: str = Field(..., description="Associated organisation identifier")
+    cve_id: str = Field(..., description="CVE identifier")
+    asset_id: str = Field(..., description="Target asset identifier, e.g. AST-001")
+    asset_name: str = Field(..., description="Display name of target asset")
+    product: str = Field(..., description="Matched product / technology")
+    installed_version: Optional[str] = Field("unknown", description="Installed software version")
+    environment: str = Field("production", description="Deployment environment")
+    exposure: str = Field("internet-facing", description="Network perimeter exposure")
+    importance: str = Field("critical", description="Asset criticality tier")
+    priority: str = Field("URGENT", description="Read-only deterministic priority from risk engine")
+    score: float = Field(0.0, description="Read-only deterministic score from risk engine")
+    status: str = Field("OPEN", description="Workflow state: OPEN, ACKNOWLEDGED, IN_PROGRESS, MITIGATED, RESOLVED, RISK_ACCEPTED")
+    owner: str = Field("Unassigned", description="Assigned team or individual")
+    due_date: Optional[str] = Field(None, description="Remediation due date (YYYY-MM-DD)")
+    is_overdue: bool = Field(False, description="Calculated overdue flag")
+    verification_details: Optional[str] = Field(None, description="Verification evidence or new version on resolution")
+    notes: list[RemediationNoteSchema] = Field(default_factory=list, description="Defensive plain-text notes")
+    activity_log: list[RemediationActivitySchema] = Field(default_factory=list, description="Immutable audit log")
+    created_at: str = Field(..., description="ISO 8601 creation timestamp")
+    updated_at: str = Field(..., description="ISO 8601 last update timestamp")
+
+
+class RemediationCreateRequest(BaseModel):
+    cve_id: str = Field(..., min_length=5, max_length=30, description="CVE identifier")
+    asset_id: Optional[str] = Field(None, description="Optional asset ID; auto-resolved if omitted")
+    owner: Optional[str] = Field("Security Team", max_length=80, description="Assigned team/owner")
+    due_date: Optional[str] = Field(None, description="Optional due date in YYYY-MM-DD format")
+    initial_note: Optional[str] = Field(None, max_length=500, description="Optional initial note")
+
+
+class RemediationUpdateRequest(BaseModel):
+    status: Optional[str] = Field(None, description="New status: OPEN, ACKNOWLEDGED, IN_PROGRESS, MITIGATED, RESOLVED, RISK_ACCEPTED")
+    owner: Optional[str] = Field(None, max_length=80, description="Updated owner")
+    due_date: Optional[str] = Field(None, description="Updated due date in YYYY-MM-DD format")
+    verification_details: Optional[str] = Field(None, max_length=500, description="Verification evidence on resolution")
+    note: Optional[str] = Field(None, max_length=500, description="Optional note describing the change")
+
+
+class RemediationNoteCreateRequest(BaseModel):
+    content: str = Field(..., min_length=1, max_length=1000, description="Plain-text note content")
+    author: Optional[str] = Field("Security Team", max_length=80, description="Author display name")
+
+
+class RemediationListResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation identifier")
+    remediations: list[RemediationRecordSchema] = Field(..., description="List of remediation items")
+    total_count: int = Field(..., description="Total count matching query")
+
+
+class RemediationSummaryResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation identifier")
+    total: int = Field(0, description="Total remediation items")
+    open: int = Field(0, description="Items in OPEN status")
+    acknowledged: int = Field(0, description="Items in ACKNOWLEDGED status")
+    in_progress: int = Field(0, description="Items in IN_PROGRESS status")
+    mitigated: int = Field(0, description="Items in MITIGATED status")
+    resolved: int = Field(0, description="Items in RESOLVED status")
+    risk_accepted: int = Field(0, description="Items in RISK_ACCEPTED status")
+    overdue: int = Field(0, description="Items overdue against target due date")
+

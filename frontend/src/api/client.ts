@@ -12,6 +12,12 @@ import {
   ProductCatalogueResponse,
   ProfileDetailResponse,
   ProfilesListResponse,
+  RemediationCreateRequest,
+  RemediationListResponse,
+  RemediationNoteCreateRequest,
+  RemediationRecord,
+  RemediationSummary,
+  RemediationUpdateRequest,
   TriageResponse,
   WeightModifiers,
   WhatIfResponse,
@@ -177,8 +183,90 @@ class ApiClient {
       }
     );
   }
+
+  async getRemediations(
+    orgId: string,
+    params?: { status?: string; priority?: string; asset_id?: string; search?: string }
+  ): Promise<RemediationListResponse> {
+    const query = new URLSearchParams();
+    if (params?.status) query.append('status', params.status);
+    if (params?.priority) query.append('priority', params.priority);
+    if (params?.asset_id) query.append('asset_id', params.asset_id);
+    if (params?.search) query.append('search', params.search);
+
+    const qs = query.toString() ? `?${query.toString()}` : '';
+    return this.request<RemediationListResponse>(
+      `/organizations/${encodeURIComponent(orgId)}/remediations${qs}`
+    );
+  }
+
+  async getRemediationSummary(orgId: string): Promise<RemediationSummary> {
+    return this.request<RemediationSummary>(
+      `/organizations/${encodeURIComponent(orgId)}/remediations/summary`
+    );
+  }
+
+  async getRemediation(orgId: string, remediationId: string): Promise<RemediationRecord> {
+    return this.request<RemediationRecord>(
+      `/organizations/${encodeURIComponent(orgId)}/remediations/${encodeURIComponent(remediationId)}`
+    );
+  }
+
+  async createRemediation(
+    orgId: string,
+    data: RemediationCreateRequest
+  ): Promise<RemediationRecord> {
+    return this.request<RemediationRecord>(
+      `/organizations/${encodeURIComponent(orgId)}/remediations`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
+  }
+
+  async updateRemediation(
+    orgId: string,
+    remediationId: string,
+    data: RemediationUpdateRequest
+  ): Promise<RemediationRecord> {
+    return this.request<RemediationRecord>(
+      `/organizations/${encodeURIComponent(orgId)}/remediations/${encodeURIComponent(remediationId)}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }
+    );
+  }
+
+  async addRemediationNote(
+    orgId: string,
+    remediationId: string,
+    data: RemediationNoteCreateRequest
+  ): Promise<RemediationRecord> {
+    return this.request<RemediationRecord>(
+      `/organizations/${encodeURIComponent(orgId)}/remediations/${encodeURIComponent(remediationId)}/notes`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
+  }
+
+  async deleteRemediation(
+    orgId: string,
+    remediationId: string
+  ): Promise<{ status: string; message: string }> {
+    return this.request<{ status: string; message: string }>(
+      `/organizations/${encodeURIComponent(orgId)}/remediations/${encodeURIComponent(remediationId)}`,
+      {
+        method: 'DELETE',
+      }
+    );
+  }
 }
 
 export const api = new ApiClient();
+
 
 

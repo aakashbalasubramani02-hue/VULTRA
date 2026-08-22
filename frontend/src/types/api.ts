@@ -339,3 +339,91 @@ export interface AIExplanationResponse {
   source_bound: boolean;
   fact_guard: FactGuardStatus;
 }
+
+// --- Phase 9: Remediation Workspace ---
+export type RemediationStatus =
+  | 'OPEN'
+  | 'ACKNOWLEDGED'
+  | 'IN_PROGRESS'
+  | 'MITIGATED'
+  | 'RESOLVED'
+  | 'RISK_ACCEPTED';
+
+export interface RemediationNote {
+  note_id: string;
+  author: string;
+  content: string;
+  created_at: string;
+}
+
+export interface RemediationActivity {
+  activity_id: string;
+  action: string;
+  details: string;
+  author: string;
+  timestamp: string;
+}
+
+export interface RemediationRecord {
+  remediation_id: string;
+  org_id: string;
+  cve_id: string;
+  asset_id: string;
+  asset_name: string;
+  product: string;
+  installed_version?: string | null;
+  environment: string;
+  exposure: string;
+  importance: string;
+  priority: string;
+  score: number;
+  status: RemediationStatus;
+  owner: string;
+  due_date?: string | null;
+  is_overdue: boolean;
+  verification_details?: string | null;
+  notes: RemediationNote[];
+  activity_log: RemediationActivity[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RemediationCreateRequest {
+  cve_id: string;
+  asset_id?: string | null;
+  owner?: string;
+  due_date?: string | null;
+  initial_note?: string | null;
+}
+
+export interface RemediationUpdateRequest {
+  status?: string;
+  owner?: string;
+  due_date?: string | null;
+  verification_details?: string | null;
+  note?: string | null;
+}
+
+export interface RemediationNoteCreateRequest {
+  content: string;
+  author?: string;
+}
+
+export interface RemediationListResponse {
+  org_id: string;
+  remediations: RemediationRecord[];
+  total_count: number;
+}
+
+export interface RemediationSummary {
+  org_id: string;
+  total: number;
+  open: number;
+  acknowledged: number;
+  in_progress: number;
+  mitigated: number;
+  resolved: number;
+  risk_accepted: number;
+  overdue: number;
+}
+

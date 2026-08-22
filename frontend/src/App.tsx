@@ -3,6 +3,7 @@ import { NavView, Navbar } from './components/Navbar';
 import { CommandCenterView } from './views/CommandCenterView';
 import { TriageView } from './views/TriageView';
 import { InventoryView } from './views/InventoryView';
+import { RemediationView } from './views/RemediationView';
 import { CompareView } from './views/CompareView';
 import { WhyNotView } from './views/WhyNotView';
 import { MethodologyView } from './views/MethodologyView';
@@ -145,6 +146,7 @@ export const App: React.FC = () => {
               onGoToWhyNot={() => setCurrentView('whynot')}
               onGoToCompare={() => setCurrentView('compare')}
               onGoToInventory={() => setCurrentView('inventory')}
+              onGoToRemediation={() => setCurrentView('remediation')}
               isLoading={isLoading}
             />
           )}
@@ -161,12 +163,21 @@ export const App: React.FC = () => {
               error={apiError}
               onRefresh={() => fetchTriageForOrg(selectedOrgId)}
               onGoToCompare={() => setCurrentView('compare')}
+              onNavigateToRemediation={() => setCurrentView('remediation')}
             />
           )}
 
           {currentView === 'inventory' && (
             <InventoryView
               key="inventory"
+              selectedProfileId={selectedOrgId}
+              onNavigateToTriage={() => setCurrentView('triage')}
+            />
+          )}
+
+          {currentView === 'remediation' && (
+            <RemediationView
+              key="remediation"
               selectedProfileId={selectedOrgId}
               onNavigateToTriage={() => setCurrentView('triage')}
             />

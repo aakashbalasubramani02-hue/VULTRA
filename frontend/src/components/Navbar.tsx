@@ -1,8 +1,8 @@
 import React from 'react';
-import { Shield, Activity, GitCompare, HelpCircle, BookOpen, Layers, Plus, Server } from 'lucide-react';
+import { Shield, Activity, GitCompare, HelpCircle, BookOpen, Layers, Plus, Server, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export type NavView = 'command' | 'triage' | 'inventory' | 'compare' | 'whynot' | 'methodology';
+export type NavView = 'command' | 'triage' | 'inventory' | 'remediation' | 'compare' | 'whynot' | 'methodology';
 
 interface NavbarProps {
   currentView: NavView;
@@ -22,6 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'command' as NavView, label: 'Overview', icon: Layers },
     { id: 'triage' as NavView, label: 'Priorities', icon: Activity },
     { id: 'inventory' as NavView, label: 'Asset Inventory', icon: Server },
+    { id: 'remediation' as NavView, label: 'Remediation', icon: ShieldCheck },
     { id: 'compare' as NavView, label: 'Comparison', icon: GitCompare },
     { id: 'whynot' as NavView, label: 'Negative Test', icon: HelpCircle },
     { id: 'methodology' as NavView, label: 'Methodology', icon: BookOpen },

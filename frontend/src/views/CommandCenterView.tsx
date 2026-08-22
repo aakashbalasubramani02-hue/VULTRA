@@ -26,6 +26,7 @@ interface CommandCenterViewProps {
   onGoToWhyNot: () => void;
   onGoToCompare: () => void;
   onGoToInventory?: () => void;
+  onGoToRemediation?: () => void;
   isLoading: boolean;
 }
 
@@ -40,6 +41,7 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
   onGoToWhyNot,
   onGoToCompare,
   onGoToInventory,
+  onGoToRemediation,
   isLoading,
 }) => {
   return (
@@ -200,7 +202,15 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
                     onClick={onGoToInventory}
                     className="text-xs font-mono px-3 py-1 bg-[#00E5FF]/10 hover:bg-[#00E5FF]/20 text-[#00E5FF] border border-[#00E5FF]/40 font-bold uppercase transition-colors cursor-pointer"
                   >
-                    Manage Inventory →
+                    Inventory →
+                  </button>
+                )}
+                {onGoToRemediation && (
+                  <button
+                    onClick={onGoToRemediation}
+                    className="text-xs font-mono px-3 py-1 bg-[#00daf3]/10 hover:bg-[#00daf3]/20 text-[#00daf3] border border-[#00daf3]/40 font-bold uppercase transition-colors cursor-pointer"
+                  >
+                    Remediation →
                   </button>
                 )}
               </div>

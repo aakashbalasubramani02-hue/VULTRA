@@ -7,6 +7,7 @@ import { DecisionIntelligenceStrip } from '../components/DecisionIntelligenceStr
 import { EvidenceDrawer } from '../components/EvidenceDrawer';
 import { BriefModal } from '../components/BriefModal';
 import { CopilotModal } from '../components/CopilotModal';
+import { CreateRemediationModal } from '../components/CreateRemediationModal';
 import { SkeletonLoader } from '../components/SkeletonLoader';
 import { ErrorBanner } from '../components/ErrorBanner';
 import { EmptyState } from '../components/EmptyState';
@@ -23,6 +24,7 @@ interface TriageViewProps {
   error: string | null;
   onRefresh: () => void;
   onGoToCompare?: () => void;
+  onNavigateToRemediation?: () => void;
 }
 
 export const TriageView: React.FC<TriageViewProps> = ({
@@ -35,10 +37,12 @@ export const TriageView: React.FC<TriageViewProps> = ({
   error,
   onRefresh,
   onGoToCompare,
+  onNavigateToRemediation,
 }) => {
   const [activeEvidenceCve, setActiveEvidenceCve] = useState<string | null>(null);
   const [traceItem, setTraceItem] = useState<TriageItem | null>(null);
   const [copilotItem, setCopilotItem] = useState<TriageItem | null>(null);
+  const [remediationItem, setRemediationItem] = useState<TriageItem | null>(null);
   const [showBrief, setShowBrief] = useState(false);
 
   const selectedProfile = profiles.find((p) => p.profile_id === selectedOrgId);
@@ -185,6 +189,7 @@ export const TriageView: React.FC<TriageViewProps> = ({
               onViewEvidence={(cveId) => setActiveEvidenceCve(cveId)}
               onExplainDecision={(itemToTrace) => setTraceItem(itemToTrace)}
               onExplainWithCopilot={(itemToExplain) => setCopilotItem(itemToExplain)}
+              onCreateRemediation={(itemToRemediate) => setRemediationItem(itemToRemediate)}
             />
           ))}
         </div>
@@ -211,6 +216,19 @@ export const TriageView: React.FC<TriageViewProps> = ({
         onViewEvidence={(cveId) => {
           setCopilotItem(null);
           setActiveEvidenceCve(cveId);
+        }}
+      />
+
+      <CreateRemediationModal
+        isOpen={!!remediationItem}
+        onClose={() => setRemediationItem(null)}
+        orgId={selectedOrgId}
+        item={remediationItem}
+        onRemediationCreated={(_record) => {
+          setRemediationItem(null);
+          if (onNavigateToRemediation) {
+            onNavigateToRemediation();
+          }
         }}
       />
 

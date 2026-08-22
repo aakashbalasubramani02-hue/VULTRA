@@ -13,6 +13,7 @@ from backend.routes import (
     evidence_router,
     health_router,
     profiles_router,
+    remediations_router,
     simulation_router,
     triage_router,
 )
@@ -73,6 +74,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 app.include_router(health_router, prefix="/api")
 app.include_router(profiles_router, prefix="/api")
 app.include_router(assets_router, prefix="/api")
+app.include_router(remediations_router, prefix="/api")
 app.include_router(triage_router, prefix="/api")
 app.include_router(evidence_router, prefix="/api")
 app.include_router(analysis_router, prefix="/api")
