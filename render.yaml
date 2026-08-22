@@ -1,0 +1,11 @@
+services:
+  # 1. Unified Full-Stack Docker Web Service (Recommended for Render)
+  - type: web
+    name: vultra-intelligence
+    env: docker
+    plan: free
+    dockerfilePath: Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 8000

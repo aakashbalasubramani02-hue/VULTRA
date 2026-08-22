@@ -1,6 +1,8 @@
+import os
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 
 from backend.routes import (
@@ -26,22 +28,11 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS configuration for local React / Vite frontend development
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:8001",
-    "http://127.0.0.1:8001",
-]
-
+# CORS configuration: Allow local development and cloud deployments (Vercel, Render, etc.)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -88,18 +79,33 @@ app.include_router(simulation_router, prefix="/api")
 app.include_router(ai_router, prefix="/api")
 
 
-@app.get("/", tags=["System"], summary="API Root")
-def root():
-    """Service metadata and quick links."""
-    return {
-        "service": "VULTRA Personalised Vulnerability Decision Intelligence",
-        "status": "online",
-        "documentation": "/docs",
-        "health": "/api/health",
-        "profiles": "/api/profiles",
-    }
+# SPA / Static frontend integration for monolithic Docker & Render deployment
+frontend_dist = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+if os.path.exists(frontend_dist) and os.path.isdir(os.path.join(frontend_dist, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="assets")
+
+    @app.get("/{full_path:path}", tags=["Frontend"], summary="Serve SPA Frontend")
+    async def serve_spa(full_path: str):
+        if full_path.startswith("api") or full_path.startswith("docs") or full_path.startswith("redoc") or full_path.startswith("openapi.json"):
+            raise HTTPException(status_code=404, detail="Not Found")
+        file_path = os.path.join(frontend_dist, full_path)
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(frontend_dist, "index.html"))
+else:
+    @app.get("/", tags=["System"], summary="API Root")
+    def root():
+        """Service metadata and quick links."""
+        return {
+            "service": "VULTRA Personalised Vulnerability Decision Intelligence",
+            "status": "online",
+            "documentation": "/docs",
+            "health": "/api/health",
+            "profiles": "/api/profiles",
+        }
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port, reload=False)

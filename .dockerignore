@@ -1,0 +1,12 @@
+.git
+.pytest_cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.local
+frontend/node_modules
+frontend/dist
+.DS_Store
+reports/
