@@ -141,6 +141,7 @@ export const App: React.FC = () => {
               isLoading={isLoading}
               error={apiError}
               onRefresh={() => fetchTriageForOrg(selectedOrgId)}
+              onGoToCompare={() => setCurrentView('compare')}
             />
           )}
 

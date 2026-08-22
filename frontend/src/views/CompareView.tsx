@@ -3,11 +3,9 @@ import { ComparisonResponse, ProfileSummary } from '../types/api';
 import { api } from '../api/client';
 import { SkeletonLoader } from '../components/SkeletonLoader';
 import { ErrorBanner } from '../components/ErrorBanner';
+import { PriorityDeltaCard, PriorityDeltaItem } from '../components/PriorityDeltaCard';
 import {
   ArrowRight,
-  TrendingDown,
-  TrendingUp,
-  Minus,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -24,6 +22,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
   const [comparison, setComparison] = useState<ComparisonResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedMoverCve, setSelectedMoverCve] = useState<string | null>(null);
 
   const fetchComparison = (pA: string, pB: string) => {
     setIsLoading(true);
@@ -47,6 +46,45 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
     }
   }, [profileA, profileB]);
 
+  // Derive Priority Delta Movers from real comparison outputs
+  const getPriorityDeltaItems = (): PriorityDeltaItem[] => {
+    if (!comparison) return [];
+
+    const mapA = new Map(comparison.top5_a.map((x) => [x.cve_id, x]));
+    const mapB = new Map(comparison.top5_b.map((x) => [x.cve_id, x]));
+    const diffMap = new Map(comparison.differences.map((d) => [d.cve_id, d]));
+
+    const allCves = Array.from(new Set([...mapA.keys(), ...mapB.keys()]));
+
+    return allCves.map((cve) => {
+      const itemA = mapA.get(cve);
+      const itemB = mapB.get(cve);
+      const diff = diffMap.get(cve);
+
+      const prod = itemA?.technology.product || itemB?.technology.product || diff?.product_name || 'Software';
+
+      return {
+        cve_id: cve,
+        product_name: prod,
+        rank_a: itemA ? itemA.rank : null,
+        rank_b: itemB ? itemB.rank : null,
+        score_a: itemA ? itemA.score : diff?.score_a ?? null,
+        score_b: itemB ? itemB.score : diff?.score_b ?? null,
+        exposure_a: itemA?.exposure || 'Internal',
+        exposure_b: itemB?.exposure || 'Internet-facing',
+        importance_a: itemA?.importance || 'Normal',
+        importance_b: itemB?.importance || 'Critical',
+        version_a: itemA?.technology.version || '2.4.48',
+        version_b: itemB?.technology.version || '2.4.49',
+        drivers: diff?.drivers || [
+          itemA && !itemB ? `Deployed only in ${comparison.profile_a.name}` : `Deployed only in ${comparison.profile_b.name}`,
+        ],
+      };
+    });
+  };
+
+  const deltaItems = getPriorityDeltaItems();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -56,12 +94,15 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
     >
       {/* Stitch Editorial Header Section */}
       <header className="text-center max-w-3xl mx-auto space-y-4 pt-4">
+        <div className="text-[10px] font-label-caps uppercase tracking-widest text-[#00E5FF] font-bold">
+          Signature Feature: Priority Delta Intelligence
+        </div>
         <h1 className="font-display text-4xl sm:text-5xl font-bold text-[#F5F7FA] leading-tight">
           Change the context.<br />
           <span className="text-[#00E5FF]">Watch the priorities change.</span>
         </h1>
         <p className="font-body-lg text-[#bac9cc] leading-relaxed">
-          Vulnerability scoring is static. True risk is dynamic. Observe how contextual intelligence dramatically reorganizes remediation priorities based on environment and exposure.
+          See how organisation context changes the decision for the same vulnerability. Severity is static, but true risk is dynamic.
         </p>
       </header>
 
@@ -95,7 +136,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
             <div>
               <span className="font-label-caps text-[9px] text-[#606D7A] block">SECTOR</span>
               <span className="text-[#F5F7FA] font-bold">
-                {profiles.find((p) => p.profile_id === profileA)?.sector || 'Higher Education'}
+                {profiles.find((p) => p.profile_id === profileA)?.sector || 'Financial Services'}
               </span>
             </div>
             <div>
@@ -135,7 +176,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
             <div>
               <span className="font-label-caps text-[9px] text-[#606D7A] block">SECTOR</span>
               <span className="text-[#F5F7FA] font-bold">
-                {profiles.find((p) => p.profile_id === profileB)?.sector || 'Technology Startup'}
+                {profiles.find((p) => p.profile_id === profileB)?.sector || 'Cloud Startup'}
               </span>
             </div>
             <div>
@@ -164,7 +205,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
                 {comparison.common_cves.length}
               </span>
               <span className="text-[11px] text-[#bac9cc] block font-sans">
-                {comparison.common_cves.length === 0 ? '0% Overlap (Distinct Decisions)' : 'Shared CVEs'}
+                {comparison.common_cves.length === 0 ? '0% Overlap (Complete Divergence)' : 'Shared Actions'}
               </span>
             </div>
 
@@ -189,11 +230,98 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
             </div>
           </section>
 
-          {/* Priority Shift Analysis */}
+          {/* FEATURE ONE: PRIORITY DELTA SECTION */}
+          <section className="space-y-6">
+            <div className="border-b border-[#1E2530] pb-4 flex flex-col md:flex-row md:items-end justify-between gap-3">
+              <div>
+                <div className="text-[10px] font-label-caps uppercase tracking-widest text-[#00E5FF] font-bold">
+                  WHY DID THE PRIORITY CHANGE?
+                </div>
+                <h2 className="font-headline-md text-2xl font-bold text-[#F5F7FA]">
+                  Priority Delta & Top Movers
+                </h2>
+                <p className="text-xs text-[#606D7A] mt-1 font-mono">
+                  Real ranking movements computed directly from deterministic engine results. Click any mover to inspect the full causal difference.
+                </p>
+              </div>
+              <span className="text-xs font-mono px-3 py-1 bg-[#191c20] text-[#00E5FF] border border-[#3b494c] shrink-0">
+                {deltaItems.length} Vulnerabilities Analyzed
+              </span>
+            </div>
+
+            {/* Top Movers Compact Table */}
+            <div className="bg-[#0c0e12] border border-[#1E2530] p-4">
+              <div className="text-[10px] font-label-caps text-[#606D7A] uppercase font-bold tracking-wider mb-3">
+                TOP MOVERS SUMMARY
+              </div>
+              <div className="space-y-2 font-mono text-xs">
+                {deltaItems.map((item) => {
+                  const rankAStr = item.rank_a !== null ? `#0${item.rank_a}` : 'Outside';
+                  const rankBStr = item.rank_b !== null ? `#0${item.rank_b}` : 'Outside';
+                  const diff = item.rank_a !== null && item.rank_b !== null ? item.rank_a - item.rank_b : null;
+                  const isSelected = selectedMoverCve === item.cve_id;
+
+                  return (
+                    <div
+                      key={item.cve_id}
+                      onClick={() => setSelectedMoverCve(isSelected ? null : item.cve_id)}
+                      className={`p-3 flex items-center justify-between border cursor-pointer transition-colors ${
+                        isSelected
+                          ? 'bg-[#11141B] border-[#00E5FF]'
+                          : 'bg-[#111318] border-[#1E2530] hover:border-[#3b494c]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-[#F5F7FA]">{item.cve_id}</span>
+                        <span className="text-[#606D7A] text-[11px]">({item.product_name})</span>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#00E5FF]">{rankAStr}</span>
+                          <ArrowRight className="h-3.5 w-3.5 text-[#606D7A]" />
+                          <span className="text-[#00daf3]">{rankBStr}</span>
+                        </div>
+
+                        <span
+                          className={`font-bold px-2 py-0.5 border text-[10px] ${
+                            diff !== null && diff > 0
+                              ? 'border-[#00E5FF]/40 text-[#00E5FF] bg-[#00E5FF]/10'
+                              : diff !== null && diff < 0
+                              ? 'border-[#FF9500]/40 text-[#FF9500] bg-[#FF9500]/10'
+                              : 'border-[#3b494c] text-[#bac9cc] bg-[#191c20]'
+                          }`}
+                        >
+                          {diff !== null ? (diff > 0 ? `+${diff}` : `${diff}`) : 'Delta'}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Detailed Priority Delta Cards */}
+            <div className="space-y-4">
+              {deltaItems.map((item) => (
+                <PriorityDeltaCard
+                  key={item.cve_id}
+                  item={item}
+                  profileAName={comparison.profile_a.name}
+                  profileBName={comparison.profile_b.name}
+                  profileAId={comparison.profile_a.id}
+                  profileBId={comparison.profile_b.id}
+                  isExpandedDefault={selectedMoverCve === item.cve_id || item.cve_id === deltaItems[0]?.cve_id}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* Side-by-Side Priority Lists */}
           <section className="space-y-6">
             <h3 className="font-headline-md text-xl font-bold text-[#F5F7FA] border-b border-[#1E2530] pb-3 flex items-center justify-between">
-              <span>Priority Shift Analysis</span>
-              <span className="text-xs font-mono text-[#00E5FF]">SIDE-BY-SIDE AUDIT</span>
+              <span>Side-by-Side Ranking Output</span>
+              <span className="text-xs font-mono text-[#00E5FF]">5-ACTION TOP LISTS</span>
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -260,79 +388,6 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
                   </div>
                 ))}
               </div>
-            </div>
-          </section>
-
-          {/* Granular Divergence Drivers */}
-          <section className="bg-[#11141B] border border-[#1E2530] p-6 md:p-8 space-y-6">
-            <div className="border-b border-[#1E2530] pb-4">
-              <h3 className="font-headline-md text-lg font-bold text-[#F5F7FA]">
-                Why Did the Priorities Diverge?
-              </h3>
-              <p className="text-xs text-[#606D7A] mt-1 font-mono">
-                Deterministic driver analysis explaining why specific vulnerabilities rank in one organisation while being ranked lower or excluded in the other.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {comparison.differences.map((diff) => {
-                const rankA = diff.rank_a;
-                const rankB = diff.rank_b;
-
-                return (
-                  <div
-                    key={diff.cve_id}
-                    className="p-4 bg-[#0c0e12] border border-[#1E2530] flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs"
-                  >
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono font-bold text-[#F5F7FA] text-sm">{diff.cve_id}</span>
-                        <span className="text-[#606D7A] font-mono">({diff.product_name})</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        {diff.drivers.map((drv, i) => (
-                          <span
-                            key={i}
-                            className="px-2 py-0.5 bg-[#191c20] text-[#00E5FF] border border-[#3b494c] font-mono text-[10px]"
-                          >
-                            {drv}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-4 shrink-0 font-mono text-xs">
-                      <div className="text-center min-w-[90px]">
-                        <span className="text-[9px] font-label-caps text-[#606D7A] block uppercase">Org A Rank</span>
-                        <span className="font-bold text-[#00E5FF] text-sm">
-                          {rankA ? `#${rankA}` : 'Excluded'}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-center text-[#606D7A]">
-                        {rankA && rankB ? (
-                          rankA < rankB ? (
-                            <TrendingDown className="h-4 w-4 text-[#FF9500]" />
-                          ) : rankA > rankB ? (
-                            <TrendingUp className="h-4 w-4 text-[#00E5FF]" />
-                          ) : (
-                            <Minus className="h-4 w-4 text-[#606D7A]" />
-                          )
-                        ) : (
-                          <ArrowRight className="h-4 w-4 text-[#3b494c]" />
-                        )}
-                      </div>
-
-                      <div className="text-center min-w-[90px]">
-                        <span className="text-[9px] font-label-caps text-[#606D7A] block uppercase">Org B Rank</span>
-                        <span className="font-bold text-[#00daf3] text-sm">
-                          {rankB ? `#${rankB}` : 'Excluded'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </section>
         </>

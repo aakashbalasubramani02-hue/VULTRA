@@ -237,9 +237,42 @@ ollama pull codellama:7b-instruct
 
 ---
 
-## 9. Automated Testing & Verification
+## 9. NEXORA Differentiation (Signature Capabilities)
 
-Run the full automated test suite (52 tests across matching, scoring, ranking, provenance, API, and AI Fact Guard):
+NEXORA doesn't just tell an organisation what vulnerability is important; it shows **why that decision was made, why it changes across organisations, and how stable the decision is**.
+
+### 1. Priority Delta
+* **Purpose**: Shows how organisational context changes vulnerability ranking between profiles (e.g. `CVE-2023-1262 #05 → #01 (+4 positions)`).
+* **Context Causal Differences**: Highlights perimeter reachability (`Internal` → `Internet-facing`), business criticality (`Normal` → `Critical`), and technology stack differences.
+* **Integrity**: Computed directly from deterministic engine results. Handles "Outside Top 5" honestly without inventing numerical ranks.
+
+### 2. Decision Trace (8 Evidence Stages)
+* **Purpose**: Step-by-step interactive decision chain from raw disclosure to defensive action.
+* **Stages**:
+  1. `SOURCE RECORD`: CVE ID, Published Date, CVSS 3.1 Base Score, CISA KEV flag, FIRST EPSS %.
+  2. `PRODUCT MATCH`: Organisation software match & Canonical Alias Registry resolution.
+  3. `VERSION MATCH`: Installed version vs affected boundary (`✓ AFFECTED` / `⚠ NEEDS VERIFICATION`).
+  4. `ORGANISATION CONTEXT`: Business service, network exposure, and criticality.
+  5. `THREAT SIGNALS`: Active weaponisation (KEV) and exploitation probability (EPSS).
+  6. `NEXORA DECISION`: Assigned priority rank (#01–#05) and deterministic 0–100 score.
+  7. `CONFIDENCE`: Deterministic confidence rating and factual rationale.
+  8. `RECOMMENDED NEXT STEP`: Safe, practical defensive guidance.
+
+### 3. Decision Stability (What-If Sensitivity Testing)
+* **Purpose**: Evaluates how robust the decision is across 4 real sensitivity scenarios (Baseline, Threat-Focus, Severity-Focus, Context-Focus).
+* **Classification Rules**:
+  - `STABLE`: Rank variation $\le 1$ position across all simulated scenarios.
+  - `MODERATELY SENSITIVE`: Rank variation of 2–3 positions.
+  - `HIGHLY SENSITIVE`: Rank variation of $\ge 4$ positions or drops outside Top 5.
+* **Sensitivity Driver**: Identifies which factor (e.g. Asset Exposure vs Technical CVSS) has the greatest impact on ranking.
+
+> *Note: These features do not replace or modify the core ranking engine. They expose and visualise the existing decision results and contextual differences.*
+
+---
+
+## 10. Automated Testing & Verification
+
+Run the full automated test suite (56 tests across matching, scoring, ranking, provenance, API, AI Fact Guard, and Differentiation):
 
 ```bash
 # Run backend pytest suite

@@ -3,6 +3,7 @@ import { ProfileSummary, TriageItem, TriageResponse } from '../types/api';
 import { OrganizationSelector } from '../components/OrganizationSelector';
 import { VulnerabilityCard } from '../components/VulnerabilityCard';
 import { DecisionTraceModal } from '../components/DecisionTraceModal';
+import { DecisionIntelligenceStrip } from '../components/DecisionIntelligenceStrip';
 import { EvidenceDrawer } from '../components/EvidenceDrawer';
 import { BriefModal } from '../components/BriefModal';
 import { CopilotModal } from '../components/CopilotModal';
@@ -20,6 +21,7 @@ interface TriageViewProps {
   isLoading: boolean;
   error: string | null;
   onRefresh: () => void;
+  onGoToCompare?: () => void;
 }
 
 export const TriageView: React.FC<TriageViewProps> = ({
@@ -30,6 +32,7 @@ export const TriageView: React.FC<TriageViewProps> = ({
   isLoading,
   error,
   onRefresh,
+  onGoToCompare,
 }) => {
   const [activeEvidenceCve, setActiveEvidenceCve] = useState<string | null>(null);
   const [traceItem, setTraceItem] = useState<TriageItem | null>(null);
@@ -38,6 +41,7 @@ export const TriageView: React.FC<TriageViewProps> = ({
 
   const selectedProfile = profiles.find((p) => p.profile_id === selectedOrgId);
   const orgName = selectedProfile ? selectedProfile.name : 'Selected Organisation';
+  const topItem = triage && triage.results.length > 0 ? triage.results[0] : null;
 
   return (
     <motion.div
@@ -50,6 +54,9 @@ export const TriageView: React.FC<TriageViewProps> = ({
       <header className="border-b border-[#1E2530] pb-8 space-y-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">
+            <div className="text-[10px] font-label-caps uppercase tracking-widest text-[#00E5FF] font-bold">
+              Deterministic Vulnerability Triage
+            </div>
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-[#00E5FF] tracking-tighter">
               Security Priorities
             </h1>
@@ -132,6 +139,18 @@ export const TriageView: React.FC<TriageViewProps> = ({
         </div>
       )}
 
+      {/* SIGNATURE 3-PANEL DECISION INTELLIGENCE STRIP */}
+      {topItem && !isLoading && (
+        <DecisionIntelligenceStrip
+          topItem={topItem}
+          onOpenTrace={() => setTraceItem(topItem)}
+          onOpenCompare={() => {
+            if (onGoToCompare) onGoToCompare();
+          }}
+          onOpenStability={() => setActiveEvidenceCve(topItem.cve_id)}
+        />
+      )}
+
       {/* Error state */}
       {error && <ErrorBanner message={error} onRetry={onRefresh} />}
 
@@ -159,6 +178,7 @@ export const TriageView: React.FC<TriageViewProps> = ({
               key={item.cve_id}
               item={item}
               index={idx}
+              profileId={selectedOrgId}
               onViewEvidence={(cveId) => setActiveEvidenceCve(cveId)}
               onExplainDecision={(itemToTrace) => setTraceItem(itemToTrace)}
               onExplainWithCopilot={(itemToExplain) => setCopilotItem(itemToExplain)}
