@@ -1,12 +1,17 @@
+import json
+import re
+from pathlib import Path
 from dataclasses import replace
 from typing import Optional
 
 from src.data_loader import load_vulnerabilities, load_profiles
+from src.normalizer import canonicalize_product_name
 from src.models import (
     MatchOutcome,
     OrganizationProfile,
     RankingResult,
     ScoredVulnerability,
+    TechnologyProfile,
     VulnerabilityRecord,
     WeightModifiers,
 )
@@ -15,6 +20,9 @@ from backend.schemas.api_models import (
     ComparisonDifferenceSchema,
     ComparisonResponse,
     EvidenceResponse,
+    OrganizationCreateRequest,
+    OrganizationUpdateRequest,
+    ProductCatalogueResponse,
     ProfileDetailResponse,
     ProfileHeaderSchema,
     ProfileSummarySchema,
@@ -34,6 +42,10 @@ from backend.schemas.api_models import (
     WhyNotItemSchema,
     WhyNotResponse,
 )
+
+DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
+PROFILES_FILE = DATA_DIR / 'profiles.json'
+
 
 
 class TriageService:
@@ -114,6 +126,227 @@ class TriageService:
             technologies=tech_schemas,
             critical_products=list(p.critical_products),
         )
+
+    def get_catalogue_products(self) -> ProductCatalogueResponse:
+        """Dynamically discover unique products present in the authoritative vulnerability dataset."""
+        vulns = self.get_vulnerabilities()
+        unique_prods = sorted(list(set(v.product_name for v in vulns if v.product_name)))
+        return ProductCatalogueResponse(
+            products=unique_prods,
+            total_count=len(unique_prods),
+        )
+
+    def _read_profiles_raw_json(self) -> dict:
+        """Read profiles.json from data directory safely."""
+        if not PROFILES_FILE.exists():
+            return {"$schema_description": "VULTRA profiles", "organizations": []}
+        return json.loads(PROFILES_FILE.read_text(encoding='utf-8'))
+
+    def _save_profiles_raw_json(self, data: dict) -> None:
+        """Write updated profiles data safely to profiles.json."""
+        PROFILES_FILE.write_text(json.dumps(data, indent=4), encoding='utf-8')
+        # Invalidate in-memory profile cache
+        self._profiles = None
+        self.get_profiles(reload=True)
+
+    def register_organization(self, req: OrganizationCreateRequest) -> ProfileDetailResponse:
+        """Register a completely new organisation profile dynamically and persist to disk."""
+        cleaned_name = req.name.strip()
+        cleaned_sector = req.sector.strip()
+        cleaned_risk = req.risk_appetite.strip()
+
+        # Check duplicate organisation name
+        for existing in self.get_profiles():
+            if existing.name.strip().lower() == cleaned_name.lower():
+                raise ValueError(f"ORGANISATION_EXISTS: An organisation with name '{cleaned_name}' already exists.")
+
+        raw_data = self._read_profiles_raw_json()
+        org_list = raw_data.get("organizations", [])
+
+        # Generate next collision-free ORG ID
+        max_num = 0
+        for org in org_list:
+            m = re.match(r"^ORG-(\d+)$", org.get("org_id", ""), re.IGNORECASE)
+            if m:
+                max_num = max(max_num, int(m.group(1)))
+        new_org_id = f"ORG-{max_num + 1:03d}"
+
+        # Normalize critical products
+        canonical_products = []
+        for cp in req.critical_products:
+            norm_cp = canonicalize_product_name(cp)
+            if norm_cp and norm_cp not in canonical_products:
+                canonical_products.append(norm_cp)
+
+        if not canonical_products:
+            raise ValueError("INVALID_PRODUCTS: At least one valid critical product must be provided.")
+
+        # Setup technologies
+        if req.technologies:
+            technologies_json = [
+                {
+                    "vendor": t.vendor.strip() or "Standard Vendor",
+                    "product": canonicalize_product_name(t.product),
+                    "version": t.version.strip() if t.version else "unknown",
+                    "service": t.service.strip() or f"{canonicalize_product_name(t.product)} Production Service",
+                    "exposure": t.exposure.strip().lower() if t.exposure else "internet-facing",
+                    "importance": t.importance.strip().lower() if t.importance else "critical",
+                }
+                for t in req.technologies
+            ]
+        else:
+            technologies_json = [
+                {
+                    "vendor": "Standard Vendor",
+                    "product": prod,
+                    "version": "unknown",
+                    "service": f"{prod} Production Deployment",
+                    "exposure": "internet-facing",
+                    "importance": "critical",
+                }
+                for prod in canonical_products
+            ]
+
+        # Setup weights
+        w = req.weight_modifiers
+        if w:
+            weights_json = {
+                "cvss_weight": round(w.cvss_weight, 2),
+                "cisa_kev_weight": round(w.cisa_kev_weight, 2),
+                "first_epss_weight": round(w.first_epss_weight, 2),
+                "exposure_weight": round(w.exposure_weight, 2),
+                "importance_weight": round(w.importance_weight, 2),
+            }
+        else:
+            weights_json = {
+                "cvss_weight": 0.15,
+                "cisa_kev_weight": 0.35,
+                "first_epss_weight": 0.25,
+                "exposure_weight": 0.15,
+                "importance_weight": 0.10,
+            }
+
+        new_org_record = {
+            "org_id": new_org_id,
+            "name": cleaned_name,
+            "sector": cleaned_sector,
+            "risk_appetite": cleaned_risk,
+            "weight_modifiers": weights_json,
+            "technologies": technologies_json,
+            "critical_products": canonical_products,
+        }
+
+        org_list.append(new_org_record)
+        raw_data["organizations"] = org_list
+        self._save_profiles_raw_json(raw_data)
+
+        detail = self.get_profile_detail(new_org_id)
+        if not detail:
+            raise RuntimeError("FAILED_PERSISTENCE: Failed to load newly registered profile.")
+        return detail
+
+    def update_organization(self, org_id: str, req: OrganizationUpdateRequest) -> Optional[ProfileDetailResponse]:
+        """Update an existing organisation profile and re-persist."""
+        raw_data = self._read_profiles_raw_json()
+        org_list = raw_data.get("organizations", [])
+
+        target_idx = None
+        for idx, org in enumerate(org_list):
+            if org.get("org_id", "").upper() == org_id.upper():
+                target_idx = idx
+                break
+
+        if target_idx is None:
+            return None
+
+        current = org_list[target_idx]
+
+        if req.name is not None:
+            cleaned_name = req.name.strip()
+            # Verify no other org shares this name
+            for idx, other in enumerate(org_list):
+                if idx != target_idx and other.get("name", "").strip().lower() == cleaned_name.lower():
+                    raise ValueError(f"ORGANISATION_EXISTS: An organisation with name '{cleaned_name}' already exists.")
+            current["name"] = cleaned_name
+
+        if req.sector is not None:
+            current["sector"] = req.sector.strip()
+
+        if req.risk_appetite is not None:
+            current["risk_appetite"] = req.risk_appetite.strip()
+
+        if req.critical_products is not None:
+            canonical_products = []
+            for cp in req.critical_products:
+                norm_cp = canonicalize_product_name(cp)
+                if norm_cp and norm_cp not in canonical_products:
+                    canonical_products.append(norm_cp)
+            if not canonical_products:
+                raise ValueError("INVALID_PRODUCTS: At least one critical product required.")
+            current["critical_products"] = canonical_products
+
+            # Synchronize technologies if not explicitly supplied
+            if req.technologies is None:
+                current["technologies"] = [
+                    {
+                        "vendor": "Standard Vendor",
+                        "product": prod,
+                        "version": "unknown",
+                        "service": f"{prod} Production Deployment",
+                        "exposure": "internet-facing",
+                        "importance": "critical",
+                    }
+                    for prod in canonical_products
+                ]
+
+        if req.technologies is not None:
+            current["technologies"] = [
+                {
+                    "vendor": t.vendor.strip() or "Standard Vendor",
+                    "product": canonicalize_product_name(t.product),
+                    "version": t.version.strip() if t.version else "unknown",
+                    "service": t.service.strip() or f"{canonicalize_product_name(t.product)} Production Service",
+                    "exposure": t.exposure.strip().lower() if t.exposure else "internet-facing",
+                    "importance": t.importance.strip().lower() if t.importance else "critical",
+                }
+                for t in req.technologies
+            ]
+            current["critical_products"] = [t["product"] for t in current["technologies"]]
+
+        if req.weight_modifiers is not None:
+            w = req.weight_modifiers
+            current["weight_modifiers"] = {
+                "cvss_weight": round(w.cvss_weight, 2),
+                "cisa_kev_weight": round(w.cisa_kev_weight, 2),
+                "first_epss_weight": round(w.first_epss_weight, 2),
+                "exposure_weight": round(w.exposure_weight, 2),
+                "importance_weight": round(w.importance_weight, 2),
+            }
+
+        org_list[target_idx] = current
+        raw_data["organizations"] = org_list
+        self._save_profiles_raw_json(raw_data)
+
+        return self.get_profile_detail(org_id)
+
+    def delete_organization(self, org_id: str) -> bool:
+        """Delete a dynamic organisation profile, protecting benchmark organisations."""
+        # Protect benchmark organisations
+        if org_id.upper() in ("ORG-001", "ORG-002", "ORG-003"):
+            raise ValueError(f"BENCHMARK_PROTECTED: Benchmark organisation '{org_id}' cannot be deleted.")
+
+        raw_data = self._read_profiles_raw_json()
+        org_list = raw_data.get("organizations", [])
+
+        initial_len = len(org_list)
+        org_list = [org for org in org_list if org.get("org_id", "").upper() != org_id.upper()]
+
+        if len(org_list) == initial_len:
+            return False
+
+        raw_data["organizations"] = org_list
+        self._save_profiles_raw_json(raw_data)
+        return True
 
     def _convert_scored_vuln_to_schema(self, item: ScoredVulnerability) -> TriageItemSchema:
         """Map internal ScoredVulnerability dataclass to API TriageItemSchema."""

@@ -3,6 +3,9 @@ import {
   ComparisonResponse,
   EvidenceResponse,
   HealthResponse,
+  OrganizationCreateRequest,
+  OrganizationUpdateRequest,
+  ProductCatalogueResponse,
   ProfileDetailResponse,
   ProfilesListResponse,
   TriageResponse,
@@ -97,6 +100,37 @@ class ApiClient {
       }
     );
   }
+
+  async getProductCatalogue(): Promise<ProductCatalogueResponse> {
+    return this.request<ProductCatalogueResponse>('/organizations/catalogue/products');
+  }
+
+  async registerOrganization(data: OrganizationCreateRequest): Promise<ProfileDetailResponse> {
+    return this.request<ProfileDetailResponse>('/organizations', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateOrganization(
+    profileId: string,
+    data: OrganizationUpdateRequest
+  ): Promise<ProfileDetailResponse> {
+    return this.request<ProfileDetailResponse>(`/organizations/${encodeURIComponent(profileId)}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteOrganization(profileId: string): Promise<{ status: string; message: string }> {
+    return this.request<{ status: string; message: string }>(
+      `/organizations/${encodeURIComponent(profileId)}`,
+      {
+        method: 'DELETE',
+      }
+    );
+  }
 }
 
 export const api = new ApiClient();
+

@@ -17,6 +17,7 @@ interface TriageViewProps {
   profiles: ProfileSummary[];
   selectedOrgId: string;
   onSelectOrg: (id: string) => void;
+  onOpenRegister?: () => void;
   triage: TriageResponse | null;
   isLoading: boolean;
   error: string | null;
@@ -28,6 +29,7 @@ export const TriageView: React.FC<TriageViewProps> = ({
   profiles,
   selectedOrgId,
   onSelectOrg,
+  onOpenRegister,
   triage,
   isLoading,
   error,
@@ -96,6 +98,7 @@ export const TriageView: React.FC<TriageViewProps> = ({
               profiles={profiles}
               selectedOrgId={selectedOrgId}
               onSelectOrg={onSelectOrg}
+              onOpenRegister={onOpenRegister}
               isLoading={isLoading}
             />
           </div>

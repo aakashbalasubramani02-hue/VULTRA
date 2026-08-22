@@ -56,6 +56,30 @@ class ProfileDetailResponse(BaseModel):
     critical_products: list[str] = Field(default_factory=list, description="Critical products list")
 
 
+class OrganizationCreateRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=120, description="Organisation display name")
+    sector: str = Field(..., min_length=2, max_length=80, description="Industry sector")
+    risk_appetite: str = Field("Medium", description="Risk appetite: Low, Medium, High, Zero-Tolerance")
+    critical_products: list[str] = Field(..., min_length=1, description="List of deployed critical products")
+    weight_modifiers: Optional[WeightModifiersSchema] = Field(None, description="Optional custom weight modifiers")
+    technologies: Optional[list[TechnologySchema]] = Field(None, description="Optional structured asset technology mappings")
+
+
+class OrganizationUpdateRequest(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=120)
+    sector: Optional[str] = Field(None, min_length=2, max_length=80)
+    risk_appetite: Optional[str] = Field(None)
+    critical_products: Optional[list[str]] = Field(None, min_length=1)
+    weight_modifiers: Optional[WeightModifiersSchema] = None
+    technologies: Optional[list[TechnologySchema]] = None
+
+
+class ProductCatalogueResponse(BaseModel):
+    products: list[str] = Field(..., description="Dynamically discovered products from vulnerability dataset")
+    total_count: int = Field(..., description="Count of unique products")
+
+
+
 # --- Triage Decision ---
 class ProfileHeaderSchema(BaseModel):
     id: str = Field(..., description="Organisation identifier")

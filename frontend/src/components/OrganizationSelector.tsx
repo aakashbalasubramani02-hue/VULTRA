@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Building2, ChevronDown, Check, ShieldAlert, Cpu } from 'lucide-react';
+import { Building2, ChevronDown, Check, ShieldAlert, Cpu, Plus } from 'lucide-react';
 import { ProfileSummary } from '../types/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -7,6 +7,7 @@ interface OrganizationSelectorProps {
   profiles: ProfileSummary[];
   selectedOrgId: string;
   onSelectOrg: (orgId: string) => void;
+  onOpenRegister?: () => void;
   isLoading?: boolean;
 }
 
@@ -14,6 +15,7 @@ export const OrganizationSelector: React.FC<OrganizationSelectorProps> = ({
   profiles,
   selectedOrgId,
   onSelectOrg,
+  onOpenRegister,
   isLoading = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -139,6 +141,22 @@ export const OrganizationSelector: React.FC<OrganizationSelectorProps> = ({
                 );
               })}
             </div>
+
+            {onOpenRegister && (
+              <div className="p-2.5 bg-[#11141B] border-t border-[#1E2530]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    onOpenRegister();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2 bg-[#00E5FF]/15 hover:bg-[#00E5FF]/25 border border-[#00E5FF]/40 text-[#00E5FF] font-label-caps text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>Register New Organisation</span>
+                </button>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

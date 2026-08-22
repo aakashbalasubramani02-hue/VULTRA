@@ -5,6 +5,7 @@ import { TriageView } from './views/TriageView';
 import { CompareView } from './views/CompareView';
 import { WhyNotView } from './views/WhyNotView';
 import { MethodologyView } from './views/MethodologyView';
+import { RegisterOrganizationModal } from './components/RegisterOrganizationModal';
 import { api } from './api/client';
 import {
   ProfileDetailResponse,
@@ -24,8 +25,22 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);
 
   // 1. Initial Load: Check health and fetch available profiles
+  const refreshProfilesList = useCallback(async () => {
+    try {
+      const res = await api.getProfiles();
+      if (res.profiles.length > 0) {
+        setProfiles(res.profiles);
+        return res.profiles;
+      }
+    } catch (err: any) {
+      setApiError(err.message || 'Failed to load organisation profiles.');
+    }
+    return [];
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
     api
@@ -42,24 +57,16 @@ export const App: React.FC = () => {
         }
       });
 
-    api
-      .getProfiles()
-      .then((res) => {
-        if (isMounted && res.profiles.length > 0) {
-          setProfiles(res.profiles);
-          setSelectedOrgId(res.profiles[0].profile_id);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          setApiError(err.message || 'Failed to load organisation profiles.');
-        }
-      });
+    refreshProfilesList().then((loadedProfiles) => {
+      if (isMounted && loadedProfiles.length > 0) {
+        setSelectedOrgId((prev) => prev || loadedProfiles[0].profile_id);
+      }
+    });
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [refreshProfilesList]);
 
   // 2. Fetch Triage & Profile Detail whenever active profile changes
   const fetchTriageForOrg = useCallback((orgId: string) => {
@@ -93,6 +100,13 @@ export const App: React.FC = () => {
     setSelectedOrgId(orgId);
   };
 
+  const handleOrganizationRegistered = async (newOrgId: string) => {
+    await refreshProfilesList();
+    setSelectedOrgId(newOrgId);
+    setCurrentView('triage');
+    fetchTriageForOrg(newOrgId);
+  };
+
   return (
     <div className="min-h-screen bg-[#111318] text-[#F5F7FA] flex flex-col font-sans selection:bg-[#00E5FF] selection:text-[#0c0e12] overflow-x-hidden">
       {/* Fixed Top Editorial Navigation */}
@@ -101,6 +115,7 @@ export const App: React.FC = () => {
         onViewChange={(view) => setCurrentView(view)}
         isBackendConnected={isBackendConnected}
         selectedOrgId={selectedOrgId}
+        onOpenRegister={() => setIsRegisterOpen(true)}
       />
 
       {/* Backend Offline Warning Banner */}
@@ -122,6 +137,7 @@ export const App: React.FC = () => {
               profiles={profiles}
               selectedOrgId={selectedOrgId}
               onSelectOrg={handleSelectOrg}
+              onOpenRegister={() => setIsRegisterOpen(true)}
               profileDetail={profileDetail}
               triageSummary={triageData ? triageData.summary : null}
               onGoToTriage={() => setCurrentView('triage')}
@@ -137,6 +153,7 @@ export const App: React.FC = () => {
               profiles={profiles}
               selectedOrgId={selectedOrgId}
               onSelectOrg={handleSelectOrg}
+              onOpenRegister={() => setIsRegisterOpen(true)}
               triage={triageData}
               isLoading={isLoading}
               error={apiError}
@@ -168,6 +185,13 @@ export const App: React.FC = () => {
           )}
         </AnimatePresence>
       </main>
+
+      {/* Register Organisation Modal */}
+      <RegisterOrganizationModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onOrganizationRegistered={handleOrganizationRegistered}
+      />
 
       {/* Editorial Footer */}
       <footer className="border-t border-[#1E2530] bg-[#0c0e12] mt-auto">

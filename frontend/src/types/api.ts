@@ -47,6 +47,30 @@ export interface ProfileDetailResponse {
   critical_products: string[];
 }
 
+export interface OrganizationCreateRequest {
+  name: string;
+  sector: string;
+  risk_appetite: string;
+  critical_products: string[];
+  weight_modifiers?: Partial<WeightModifiers>;
+  technologies?: Technology[];
+}
+
+export interface OrganizationUpdateRequest {
+  name?: string;
+  sector?: string;
+  risk_appetite?: string;
+  critical_products?: string[];
+  weight_modifiers?: Partial<WeightModifiers>;
+  technologies?: Technology[];
+}
+
+export interface ProductCatalogueResponse {
+  products: string[];
+  total_count: number;
+}
+
+
 export interface ProfileHeader {
   id: string;
   name: string;

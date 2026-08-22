@@ -11,7 +11,7 @@
                 "cisa_kev_weight": 0.35,
                 "first_epss_weight": 0.25,
                 "exposure_weight": 0.15,
-                "importance_weight": 0.10
+                "importance_weight": 0.1
             },
             "technologies": [
                 {
@@ -42,11 +42,11 @@
             "sector": "Technology",
             "risk_appetite": "High",
             "weight_modifiers": {
-                "cvss_weight": 0.10,
-                "cisa_kev_weight": 0.30,
+                "cvss_weight": 0.1,
+                "cisa_kev_weight": 0.3,
                 "first_epss_weight": 0.35,
                 "exposure_weight": 0.15,
-                "importance_weight": 0.10
+                "importance_weight": 0.1
             },
             "technologies": [
                 {
@@ -77,11 +77,11 @@
             "sector": "Critical Infrastructure",
             "risk_appetite": "Zero-Tolerance",
             "weight_modifiers": {
-                "cvss_weight": 0.20,
-                "cisa_kev_weight": 0.40,
+                "cvss_weight": 0.2,
+                "cisa_kev_weight": 0.4,
                 "first_epss_weight": 0.15,
                 "exposure_weight": 0.15,
-                "importance_weight": 0.10
+                "importance_weight": 0.1
             },
             "technologies": [
                 {

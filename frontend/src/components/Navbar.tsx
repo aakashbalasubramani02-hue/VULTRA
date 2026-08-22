@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Activity, GitCompare, HelpCircle, BookOpen, Layers } from 'lucide-react';
+import { Shield, Activity, GitCompare, HelpCircle, BookOpen, Layers, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export type NavView = 'command' | 'triage' | 'compare' | 'whynot' | 'methodology';
@@ -9,12 +9,14 @@ interface NavbarProps {
   onViewChange: (view: NavView) => void;
   isBackendConnected: boolean;
   selectedOrgId: string;
+  onOpenRegister?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentView,
   onViewChange,
   isBackendConnected,
+  onOpenRegister,
 }) => {
   const navItems = [
     { id: 'command' as NavView, label: 'Overview', icon: Layers },
@@ -75,8 +77,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           })}
         </nav>
 
-        {/* Right Status & Launch CTA */}
-        <div className="flex items-center gap-4">
+        {/* Right Status & Actions */}
+        <div className="flex items-center gap-3">
+          {onOpenRegister && (
+            <button
+              type="button"
+              onClick={onOpenRegister}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#191c20] hover:bg-[#282a2f] border border-[#00E5FF]/40 text-[#00E5FF] text-[11px] font-label-caps font-bold tracking-wider uppercase transition-colors cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>Register Org</span>
+            </button>
+          )}
+
           <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 border border-[#3b494c] bg-[#0c0e12] text-[10px] font-label-caps tracking-widest text-[#bac9cc]">
             <span
               className={`w-1.5 h-1.5 rounded-full ${
@@ -103,10 +116,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               key={item.id}
               onClick={() => onViewChange(item.id)}
-              className={`px-3 py-1.5 font-label-caps text-[10px] tracking-widest uppercase whitespace-nowrap ${
+              className={`px-3 py-1 text-xs font-label-caps uppercase tracking-wider shrink-0 cursor-pointer ${
                 isActive
-                  ? 'bg-[#00E5FF]/10 text-[#00E5FF] border-b border-[#00E5FF]'
-                  : 'text-[#606D7A] hover:text-[#F5F7FA]'
+                  ? 'text-[#00E5FF] font-bold border-b-2 border-[#00E5FF]'
+                  : 'text-[#606D7A]'
               }`}
             >
               {item.label}

@@ -19,6 +19,7 @@ interface CommandCenterViewProps {
   profiles: ProfileSummary[];
   selectedOrgId: string;
   onSelectOrg: (id: string) => void;
+  onOpenRegister?: () => void;
   profileDetail: ProfileDetailResponse | null;
   triageSummary: TriageSummary | null;
   onGoToTriage: () => void;
@@ -31,6 +32,7 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
   profiles,
   selectedOrgId,
   onSelectOrg,
+  onOpenRegister,
   profileDetail,
   triageSummary,
   onGoToTriage,
@@ -99,6 +101,7 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
                 profiles={profiles}
                 selectedOrgId={selectedOrgId}
                 onSelectOrg={onSelectOrg}
+                onOpenRegister={onOpenRegister}
                 isLoading={isLoading}
               />
             </div>
