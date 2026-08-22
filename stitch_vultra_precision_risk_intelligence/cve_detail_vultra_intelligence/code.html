@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VULTRA - CVE-2024-38472 Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#006875",
+                      "text-muted": "#9AA4B2",
+                      "outline": "#849396",
+                      "tertiary-fixed": "#ffdf96",
+                      "risk-urgent": "#FF3B30",
+                      "surface-container-low": "#191c20",
+                      "outline-variant": "#3b494c",
+                      "surface-tint": "#00daf3",
+                      "on-primary-fixed": "#001f24",
+                      "error": "#ffb4ab",
+                      "background": "#111318",
+                      "surface-dim": "#111318",
+                      "surface-container-high": "#282a2f",
+                      "on-secondary-container": "#b6b8c2",
+                      "surface-container-highest": "#333539",
+                      "on-tertiary-fixed": "#251a00",
+                      "secondary": "#c4c6d0",
+                      "surface-container": "#1d2024",
+                      "on-background": "#e2e2e8",
+                      "secondary-fixed-dim": "#c4c6d0",
+                      "tertiary-fixed-dim": "#f3bf26",
+                      "secondary-container": "#464951",
+                      "text-primary": "#F5F7FA",
+                      "on-primary": "#00363d",
+                      "inverse-on-surface": "#2e3035",
+                      "risk-medium": "#FFCC00",
+                      "surface-container-lowest": "#0c0e12",
+                      "secondary-fixed": "#e0e2ec",
+                      "on-error": "#690005",
+                      "primary-fixed-dim": "#00daf3",
+                      "risk-low": "#2C3139",
+                      "error-container": "#93000a",
+                      "on-tertiary": "#3e2e00",
+                      "primary-fixed": "#9cf0ff",
+                      "tertiary": "#ffeac0",
+                      "on-secondary-fixed-variant": "#44474f",
+                      "on-secondary-fixed": "#191c23",
+                      "primary": "#c3f5ff",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-container": "#fec931",
+                      "surface-variant": "#333539",
+                      "surface-bright": "#37393e",
+                      "on-tertiary-fixed-variant": "#594400",
+                      "on-surface-variant": "#bac9cc",
+                      "primary-container": "#00e5ff",
+                      "on-secondary": "#2d3038",
+                      "on-primary-fixed-variant": "#004f58",
+                      "on-primary-container": "#00626e",
+                      "on-tertiary-container": "#6f5500",
+                      "risk-high": "#FF9500",
+                      "inverse-surface": "#e2e2e8",
+                      "on-surface": "#e2e2e8",
+                      "surface": "#111318"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "40px",
+                      "unit": "4px",
+                      "gutter": "24px",
+                      "section-gap": "80px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Geist"
+                      ],
+                      "headline-lg-mobile": [
+                              "Geist"
+                      ],
+                      "headline-md": [
+                              "Geist"
+                      ],
+                      "body-lg": [
+                              "Geist"
+                      ],
+                      "body-md": [
+                              "Geist"
+                      ],
+                      "label-caps": [
+                              "Geist"
+                      ],
+                      "headline-lg": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "11px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.03em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        /* Smooth fade-in and slide-up for high-end loading sequence */
+        @keyframes editorialReveal {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .reveal {
+            animation: editorialReveal 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+        }
+        .reveal:nth-child(1) { animation-delay: 0.1s; }
+        .reveal:nth-child(2) { animation-delay: 0.2s; }
+        .reveal:nth-child(3) { animation-delay: 0.3s; }
+        .reveal:nth-child(4) { animation-delay: 0.4s; }
+        .reveal:nth-child(5) { animation-delay: 0.5s; }
+        .reveal:nth-child(6) { animation-delay: 0.6s; }
+        
+        .ghost-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid theme('colors.outline-variant');
+            color: theme('colors.text-primary');
+        }
+        .ghost-input:focus {
+            outline: none;
+            border-bottom-color: theme('colors.primary-container');
+            box-shadow: none;
+        }
+      </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-background bg-background text-text-primary">
+<!-- Top Navigation (VULTRA) -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl dark:bg-surface/80 border-b border-outline-variant dark:border-outline-variant transition-all duration-200">
+<div class="flex justify-between items-center px-margin h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<a class="hover:text-primary dark:hover:text-primary transition-colors duration-200 flex items-center group text-on-surface-variant dark:text-on-surface-variant" href="#">
+<span class="material-symbols-outlined mr-2 transition-transform group-hover:-translate-x-1" data-icon="arrow_back">arrow_back</span>
+<span class="font-label-caps text-label-caps">BACK TO INTELLIGENCE</span>
+</a>
+<div class="h-4 w-px bg-outline-variant hidden md:block"></div>
+<a class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface dark:text-on-surface hidden md:block" href="#">VULTRA</a>
+</div>
+<div>
+<button class="bg-primary-container text-background font-label-caps text-label-caps px-6 py-2 rounded-none hover:bg-primary transition-colors">
+                Launch Analysis
+            </button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-section-gap px-margin md:px-[max(40px,calc(50vw-600px))]">
+<!-- Header Section -->
+<header class="reveal mb-16">
+<div class="flex items-center gap-4 mb-6">
+<div class="flex items-center gap-2 text-risk-urgent">
+<span class="material-symbols-outlined" data-icon="warning" data-weight="fill">warning</span>
+<span class="font-label-caps text-label-caps">URGENT</span>
+</div>
+<div class="h-px w-8 bg-outline-variant"></div>
+<span class="font-label-caps text-label-caps text-text-muted">CVE-2024-38472</span>
+</div>
+<h1 class="font-display-lg text-display-lg md:text-[56px] leading-[1.1] text-text-primary mb-8 max-w-4xl">
+                This vulnerability may put your internet-facing student portal at risk.
+            </h1>
+<!-- Context Strip -->
+<div class="flex flex-wrap gap-x-12 gap-y-6 py-6 border-y border-outline-variant">
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-text-muted">TECHNOLOGY</span>
+<span class="font-body-md text-body-md text-text-primary">Apache</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-text-muted">EXPOSURE</span>
+<span class="font-body-md text-body-md text-text-primary">Internet-facing</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-text-muted">SERVICE</span>
+<span class="font-body-md text-body-md text-text-primary">Student Portal</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-text-muted">IMPORTANCE</span>
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-risk-urgent"></div>
+<span class="font-body-md text-body-md text-text-primary">Critical</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Two Column Grid for Main Content -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Column: Editorial & Action -->
+<div class="md:col-span-8 flex flex-col gap-section-gap">
+<!-- Editorial Explanation -->
+<section class="reveal border-l border-outline-variant/30 pl-6">
+<h2 class="font-label-caps text-label-caps text-primary-container mb-6 flex items-center gap-2">
+<span class="h-px w-4 bg-primary-container"></span>
+                        WHY THIS MATTERS
+                    </h2>
+<div class="prose prose-invert prose-lg max-w-none font-body-lg text-body-lg text-text-muted">
+<p class="mb-4">
+                            Recent intelligence indicates active exploitation of an authentication bypass vulnerability within Apache instances deployed at the perimeter. This flaw, designated CVE-2024-38472, allows unauthenticated, remote attackers to circumvent authentication controls and access restricted administrative endpoints.
+                        </p>
+<p class="">
+                            In the context of the deployed Student Portal, this translates to potential unauthorized access to sensitive academic records, financial data, and PII. The high exposure rating is driven by the portal's internet-facing nature, lacking the compensating controls of an internal-only deployment. The convergence of a low-complexity attack vector and high-impact data exposure necessitates immediate defensive posturing.
+                        </p>
+</div>
+</section>
+<!-- Next Action Panel -->
+<section class="reveal">
+<div class="bg-surface-container-low border-l-2 border-primary-container p-8 relative overflow-hidden">
+<!-- Abstract Background element -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container opacity-5 blur-[100px] rounded-full pointer-events-none"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-4">
+<span class="font-label-caps text-label-caps text-primary-container bg-primary-container/10 px-2 py-1">SAFE DEFENSIVE ACTION</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-text-primary mb-6">
+                                Verify the installed version and review the vendor guidance for immediate patching or mitigation implementation.
+                            </h3>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-primary-container text-background font-label-caps text-label-caps px-6 py-3 rounded-none hover:bg-primary transition-colors flex items-center justify-center gap-2 group">
+<span class="">Execute Verification Workflow</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="border border-outline-variant text-text-primary font-label-caps text-label-caps px-6 py-3 rounded-none hover:border-primary-container hover:text-primary-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="description">description</span>
+<span class="">Vendor Guidance</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Scores & Provenance -->
+<div class="md:col-span-4 flex flex-col gap-12">
+<!-- Score Explanation -->
+<section class="reveal">
+<div class="flex justify-between items-end border-b border-outline-variant pb-4 mb-2">
+<h2 class="font-label-caps text-label-caps text-text-muted">THREAT SCORE</h2>
+<span class="font-display-lg text-display-lg text-risk-urgent leading-none" style="font-size: 48px;">84</span>
+</div>
+<div class="flex flex-col gap-4 relative"><div class="absolute left-0 top-0 bottom-0 w-px bg-primary-container/30 -ml-4"></div>
+<div class="flex justify-between items-center py-2 group hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<span class="font-body-md text-body-md text-text-muted group-hover:text-text-primary transition-colors">Base Vulnerability (CVSS)</span>
+<span class="font-body-md text-body-md text-text-primary">+24</span>
+</div>
+<div class="flex justify-between items-center py-2 group hover:bg-surface-container-low transition-colors border-b border-outline-variant/30 relative overflow-hidden">
+<div class="absolute left-0 top-0 h-full w-0.5 bg-risk-urgent hidden group-hover:block"></div>
+<span class="font-body-md text-body-md text-text-muted group-hover:text-text-primary transition-colors pl-2">Known Exploited (KEV)</span>
+<span class="font-body-md text-body-md text-risk-urgent font-bold">+40</span>
+</div>
+<div class="flex justify-between items-center py-2 group hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<span class="font-body-md text-body-md text-text-muted group-hover:text-text-primary transition-colors">Exposure Factor</span>
+<span class="font-body-md text-body-md text-risk-high">+20</span>
+</div>
+</div>
+</section>
+<!-- Confidence -->
+<section class="reveal">
+<h2 class="font-label-caps text-label-caps text-text-muted mb-4">ANALYSIS CONFIDENCE</h2>
+<div class="flex items-center gap-3 mb-4">
+<div class="flex gap-1">
+<div class="w-2 h-6 bg-primary-container"></div>
+<div class="w-2 h-6 bg-primary-container"></div>
+<div class="w-2 h-6 bg-primary-container"></div>
+<div class="w-2 h-6 bg-surface-container-highest"></div>
+</div>
+<span class="font-label-caps text-label-caps text-primary-container">HIGH</span>
+</div>
+<ul class="flex flex-col gap-2 font-body-md text-body-md text-text-muted">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary-container mt-0.5" data-icon="check_circle">check_circle</span>
+<span class="">Direct payload match in telemetry.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary-container mt-0.5" data-icon="check_circle">check_circle</span>
+<span class="">Confirmed deployment of vulnerable Apache version.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary-container mt-0.5" data-icon="check_circle">check_circle</span>
+<span class="">Multiple corroborating OSINT reports.</span>
+</li>
+</ul>
+</section>
+<!-- Provenance -->
+<section class="reveal">
+<h2 class="font-label-caps text-label-caps text-text-muted mb-4">PROVENANCE &amp; SOURCES</h2>
+<div class="flex flex-col gap-3">
+<div class="flex justify-between items-center p-3 border border-outline-variant hover:border-primary-container transition-colors group">
+<span class="font-label-caps text-label-caps text-text-primary">CISA KEV</span>
+<a class="text-text-muted group-hover:text-primary-container transition-colors font-body-md text-body-md text-xs flex items-center gap-1" href="#">
+                                View source <span class="material-symbols-outlined text-[14px]" data-icon="open_in_new">open_in_new</span>
+</a>
+</div>
+<div class="flex justify-between items-center p-3 border border-outline-variant hover:border-primary-container transition-colors group">
+<span class="font-label-caps text-label-caps text-text-primary">NVD</span>
+<a class="text-text-muted group-hover:text-primary-container transition-colors font-body-md text-body-md text-xs flex items-center gap-1" href="#">
+                                View source <span class="material-symbols-outlined text-[14px]" data-icon="open_in_new">open_in_new</span>
+</a>
+</div>
+<div class="flex justify-between items-center p-3 border border-outline-variant hover:border-primary-container transition-colors group">
+<span class="font-label-caps text-label-caps text-text-primary">EPSS</span>
+<a class="text-text-muted group-hover:text-primary-container transition-colors font-body-md text-body-md text-xs flex items-center gap-1" href="#">
+                                View source <span class="material-symbols-outlined text-[14px]" data-icon="open_in_new">open_in_new</span>
+</a>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface dark:bg-surface w-full py-12 border-t border-outline-variant dark:border-outline-variant mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin w-full max-w-7xl mx-auto gap-4">
+<div class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface mb-4 md:mb-0">
+            © 2024 VULTRA Intelligence Platform
+        </div>
+<div class="flex flex-wrap justify-center gap-6 font-label-caps text-label-caps">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Security Disclosure</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Contact</a>
+</div>
+</div>
+</footer>
+</body></html>

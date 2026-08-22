@@ -1,0 +1,386 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>VULTRA - Organization Setup</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "inverse-primary": "#006875",
+                            "text-muted": "#606D7A",
+                            "outline": "#849396",
+                            "tertiary-fixed": "#ffdf96",
+                            "risk-urgent": "#FF3B30",
+                            "surface-container-low": "#191c20",
+                            "outline-variant": "#3b494c",
+                            "surface-tint": "#00daf3",
+                            "on-primary-fixed": "#001f24",
+                            "error": "#ffb4ab",
+                            "background": "#111318",
+                            "surface-dim": "#111318",
+                            "surface-container-high": "#282a2f",
+                            "on-secondary-container": "#b6b8c2",
+                            "surface-container-highest": "#333539",
+                            "on-tertiary-fixed": "#251a00",
+                            "secondary": "#c4c6d0",
+                            "surface-container": "#1d2024",
+                            "on-background": "#e2e2e8",
+                            "secondary-fixed-dim": "#c4c6d0",
+                            "tertiary-fixed-dim": "#f3bf26",
+                            "secondary-container": "#464951",
+                            "text-primary": "#F5F7FA",
+                            "on-primary": "#00363d",
+                            "inverse-on-surface": "#2e3035",
+                            "risk-medium": "#FFCC00",
+                            "surface-container-lowest": "#0c0e12",
+                            "secondary-fixed": "#e0e2ec",
+                            "on-error": "#690005",
+                            "primary-fixed-dim": "#00daf3",
+                            "risk-low": "#2C3139",
+                            "error-container": "#93000a",
+                            "on-tertiary": "#3e2e00",
+                            "primary-fixed": "#9cf0ff",
+                            "tertiary": "#ffeac0",
+                            "on-secondary-fixed-variant": "#44474f",
+                            "on-secondary-fixed": "#191c23",
+                            "primary": "#c3f5ff",
+                            "on-error-container": "#ffdad6",
+                            "tertiary-container": "#fec931",
+                            "surface-variant": "#333539",
+                            "surface-bright": "#37393e",
+                            "on-tertiary-fixed-variant": "#594400",
+                            "on-surface-variant": "#bac9cc",
+                            "primary-container": "#00e5ff",
+                            "on-secondary": "#2d3038",
+                            "on-primary-fixed-variant": "#004f58",
+                            "on-primary-container": "#00626e",
+                            "on-tertiary-container": "#6f5500",
+                            "risk-high": "#FF9500",
+                            "inverse-surface": "#e2e2e8",
+                            "on-surface": "#e2e2e8",
+                            "surface": "#111318"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "margin": "40px",
+                            "unit": "4px",
+                            "gutter": "24px",
+                            "section-gap": "80px"
+                    },
+                    "fontFamily": {
+                            "display-lg": ["Geist", "sans-serif"],
+                            "headline-lg-mobile": ["Geist", "sans-serif"],
+                            "headline-md": ["Geist", "sans-serif"],
+                            "body-lg": ["Geist", "sans-serif"],
+                            "body-md": ["Geist", "sans-serif"],
+                            "label-caps": ["Geist", "sans-serif"],
+                            "headline-lg": ["Geist", "sans-serif"]
+                    },
+                    "fontSize": {
+                            "display-lg": ["64px", { "lineHeight": "1.0", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                            "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                            "headline-md": ["20px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                            "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                            "body-md": ["14px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                            "label-caps": ["11px", { "lineHeight": "1.4", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                            "headline-lg": ["32px", { "lineHeight": "1.1", "letterSpacing": "-0.03em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .scrollbar-hide::-webkit-scrollbar { display: none; }
+            .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+            
+            .input-ghost {
+                @apply bg-transparent border-0 border-b border-outline-variant py-4 px-0 font-body-lg text-body-lg text-on-surface focus:ring-0 focus:border-primary placeholder:text-surface-container-highest transition-colors w-full;
+            }
+            
+            .tech-chip {
+                @apply px-4 py-2 border border-outline-variant text-text-muted font-label-caps text-label-caps cursor-pointer hover:border-surface-tint transition-all duration-200 select-none flex items-center gap-2;
+            }
+            .tech-chip.active {
+                @apply border-primary-container text-primary-container bg-primary-container/5 shadow-[0_0_15px_rgba(0,229,255,0.1)];
+            }
+            
+            .segment-btn {
+                @apply flex-1 py-3 text-center font-label-caps text-label-caps text-text-muted hover:text-on-surface transition-colors cursor-pointer border border-transparent;
+            }
+            .segment-btn.active {
+                @apply bg-surface-container-high border-outline-variant text-primary;
+            }
+            
+            .pipeline-node::before {
+                content: '';
+                @apply absolute w-2 h-2 rounded-full bg-outline-variant left-[-29px] top-1.5 transition-colors duration-300;
+            }
+            .pipeline-step:hover .pipeline-node::before, .pipeline-step.active .pipeline-node::before {
+                @apply bg-primary shadow-[0_0_8px_rgba(0,229,255,0.8)];
+            }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container flex flex-col md:flex-row overflow-x-hidden">
+<!-- Left Panel: Context & Brand Anchor -->
+<div class="w-full md:w-[35%] lg:w-[400px] xl:w-[480px] bg-surface border-b md:border-b-0 md:border-r border-outline-variant p-margin flex flex-col relative z-20 shrink-0">
+<!-- Abstract atmospheric background -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" data-alt="A highly abstract, dark minimalist technical texture. Subtle, low-contrast geometric wireframes and precise grid lines over a deep charcoal black background, conveying a high-tech cybersecurity environment. No bright lights, just clinical precision." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCfcGAySt__xkFyxuT-x-hI7TfRSBE64oH3JDHF--PaWcV-E9ZXGU6fHoBGUhYm9CmMfKbLft-jAAu-GZ8kKcWshheGt-LLbq8rCftLSA_zFDKUr57SMuDABRo5W_CqwE_XJAwUmLy9ulP-Hme7tPFA5qMxzEhVOlWmp7nc-lCE-N_vvrWSS0SzNi5FBPN-3VeNeGy4QF06dnICfMG4acToRxdQH3bYXkI1N_stQxU4rKMj2USuGeXg'); background-size: cover; background-position: center;"></div>
+<div class="relative z-10 flex flex-col h-full">
+<div class="mb-section-gap">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tighter">VULTRA</span>
+</div>
+<div class="mt-auto md:mt-24 mb-12">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-display-lg md:text-display-lg text-on-surface mb-6 text-balance">
+                    Tell VULTRA what you're protecting.
+                </h1>
+<p class="font-body-lg text-body-lg text-text-muted max-w-sm text-balance">
+                    Define your digital footprint. VULTRA utilizes this core telemetry to filter global threat intelligence down to strictly relevant vectors, eliminating operational noise.
+                </p>
+</div>
+<!-- Terminal/Log aesthetic decoration -->
+<div class="mt-auto hidden md:block opacity-30 font-label-caps text-label-caps text-text-muted space-y-1">
+<div>&gt; INIT SEQ_01 ... OK</div>
+<div>&gt; ESTABLISHING SECURE PROTOCOL ... OK</div>
+<div class="animate-pulse">&gt; AWAITING TELEMETRY DATA _</div>
+</div>
+</div>
+</div>
+<!-- Right Panel: Interactive Builder -->
+<div class="flex-1 p-margin md:p-12 lg:p-section-gap overflow-y-auto h-screen scrollbar-hide relative bg-background">
+<div class="max-w-3xl mx-auto space-y-section-gap pb-32">
+<!-- Core Identity -->
+<section class="group">
+<div class="flex items-center gap-4 mb-8 border-b border-outline-variant pb-4">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">domain</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Core Identity</h2>
+</div>
+<div class="space-y-8 pl-8 md:pl-10">
+<div class="relative">
+<label class="block font-label-caps text-label-caps text-text-muted mb-1 transition-colors">Organization Handle</label>
+<input class="input-ghost" placeholder="e.g., ACME Corp Global" type="text">
+</div>
+<div class="relative">
+<label class="block font-label-caps text-label-caps text-text-muted mb-1 transition-colors">Primary Domain</label>
+<input class="input-ghost" placeholder="acme-global.io" type="text">
+</div>
+</div>
+</section>
+<!-- Technology Stack -->
+<section class="group">
+<div class="flex justify-between items-end mb-8 border-b border-outline-variant pb-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">memory</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Observed Stack</h2>
+</div>
+<span class="font-label-caps text-label-caps text-text-muted"><span id="chip-count">0</span> SELECTED</span>
+</div>
+<div class="pl-8 md:pl-10">
+<p class="font-body-md text-body-md text-text-muted mb-6">Select primary infrastructure components. This drastically refines intelligence matching.</p>
+<div class="flex flex-wrap gap-3" id="tech-stack-container">
+<!-- Chips injected via JS -->
+<div class="tech-chip" onclick="toggleChip(this, 'Apache')">Apache</div>
+<div class="tech-chip" onclick="toggleChip(this, 'Nginx')">Nginx</div>
+<div class="tech-chip" onclick="toggleChip(this, 'MySQL')">MySQL</div>
+<div class="tech-chip" onclick="toggleChip(this, 'PostgreSQL')">PostgreSQL</div>
+<div class="tech-chip" onclick="toggleChip(this, 'MongoDB')">MongoDB</div>
+<div class="tech-chip" onclick="toggleChip(this, 'Node.js')">Node.js</div>
+<div class="tech-chip" onclick="toggleChip(this, 'Python')">Python</div>
+<div class="tech-chip" onclick="toggleChip(this, 'Java')">Java</div>
+<div class="tech-chip" onclick="toggleChip(this, 'AWS')">AWS</div>
+<div class="tech-chip" onclick="toggleChip(this, 'Azure')">Azure</div>
+<div class="tech-chip" onclick="toggleChip(this, 'GCP')">GCP</div>
+<div class="tech-chip" onclick="toggleChip(this, 'Docker')">Docker</div>
+<div class="tech-chip" onclick="toggleChip(this, 'Kubernetes')">Kubernetes</div>
+<div class="tech-chip" onclick="toggleChip(this, 'Linux Core')">Linux Core</div>
+<div class="tech-chip" onclick="toggleChip(this, 'Windows Server')">Windows Server</div>
+</div>
+</div>
+</section>
+<!-- Deployment Context -->
+<section class="group">
+<div class="flex items-center gap-4 mb-8 border-b border-outline-variant pb-4">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">tune</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Deployment Context</h2>
+</div>
+<div class="pl-8 md:pl-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8">
+<!-- Exposure -->
+<div>
+<label class="block font-label-caps text-label-caps text-text-muted mb-4">Network Exposure</label>
+<div class="flex border border-outline-variant p-1 bg-surface-container-lowest">
+<div class="segment-btn active" onclick="activateSegment(this, 'exposure')">External / Edge</div>
+<div class="segment-btn" onclick="activateSegment(this, 'exposure')">Internal Airgap</div>
+</div>
+</div>
+<!-- Importance -->
+<div>
+<label class="block font-label-caps text-label-caps text-text-muted mb-4">Asset Criticality</label>
+<div class="flex border border-outline-variant p-1 bg-surface-container-lowest">
+<div class="segment-btn" onclick="activateSegment(this, 'criticality')">Standard</div>
+<div class="segment-btn active" onclick="activateSegment(this, 'criticality')">High</div>
+<div class="segment-btn text-risk-high" onclick="activateSegment(this, 'criticality')">Mission Critical</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Telemetry Analysis Output (Bento/Glassmorphism blend) -->
+<section class="mt-section-gap relative">
+<!-- Decorative Top line -->
+<div class="h-[1px] w-full bg-gradient-to-r from-outline-variant via-primary-container/20 to-transparent absolute top-0 left-0"></div>
+<div class="pt-12 grid grid-cols-1 md:grid-cols-5 gap-8">
+<!-- Live Profile Signal Panel -->
+<div class="md:col-span-2 bg-surface border border-outline-variant p-6 relative group overflow-hidden">
+<div class="absolute top-0 right-0 p-3">
+<div class="flex items-center gap-2 font-label-caps text-label-caps text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                LIVE SIGNAL
+                            </div>
+</div>
+<h3 class="font-label-caps text-label-caps text-text-muted mb-6 border-b border-outline-variant pb-3">Profile Synthesis</h3>
+<div class="space-y-4">
+<p class="font-body-md text-body-md text-on-surface leading-relaxed text-balance" id="signal-summary">
+<span class="text-text-muted">Awaiting input...</span> System requires stack definition to construct organizational footprint baseline.
+                            </p>
+<div class="pt-4 mt-4 border-t border-outline-variant/50 border-dashed">
+<div class="flex justify-between items-center font-label-caps text-label-caps">
+<span class="text-text-muted">Signature Hash</span>
+<span class="text-on-surface-variant font-mono">0x<span id="mock-hash">-----</span></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Analysis Processing Pipeline -->
+<div class="md:col-span-3 bg-surface border border-outline-variant p-6">
+<h3 class="font-label-caps text-label-caps text-text-muted mb-6 border-b border-outline-variant pb-3">Intelligence Pipeline Predictor</h3>
+<div class="relative pl-6 border-l border-outline-variant space-y-8 mt-4">
+<!-- Step 1 -->
+<div class="pipeline-step relative group">
+<div class="pipeline-node font-body-md text-body-md text-on-surface flex justify-between items-start">
+<div>
+<div class="font-headline-md text-headline-md text-text-muted group-hover:text-on-surface transition-colors">Global Threat Feed</div>
+<div class="font-label-caps text-label-caps text-text-muted mt-1">Raw Ingestion Volume</div>
+</div>
+<div class="font-headline-md text-headline-md text-surface-container-highest group-hover:text-text-muted transition-colors">2.4M</div>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="pipeline-step relative group active" id="pipeline-stack">
+<div class="pipeline-node font-body-md text-body-md text-on-surface flex justify-between items-start">
+<div>
+<div class="font-headline-md text-headline-md text-on-surface transition-colors">Stack Matched</div>
+<div class="font-label-caps text-label-caps text-text-muted mt-1">Filtered by Selected Tech</div>
+</div>
+<div class="font-headline-md text-headline-md text-primary transition-colors" id="val-stack">--</div>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="pipeline-step relative group">
+<div class="pipeline-node font-body-md text-body-md text-on-surface flex justify-between items-start">
+<div>
+<div class="font-headline-md text-headline-md text-text-muted group-hover:text-on-surface transition-colors">Context Refined</div>
+<div class="font-label-caps text-label-caps text-text-muted mt-1">Exposure &amp; Criticality Adjusted</div>
+</div>
+<div class="font-headline-md text-headline-md text-surface-container-highest group-hover:text-text-muted transition-colors" id="val-context">--</div>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="pipeline-step relative group">
+<div class="pipeline-node font-body-md text-body-md text-on-surface flex justify-between items-start">
+<div>
+<div class="font-headline-md text-headline-md text-text-muted group-hover:text-primary-container transition-colors">Actionable Priorities</div>
+<div class="font-label-caps text-label-caps text-text-muted mt-1">Immediate Remediation Queue</div>
+</div>
+<div class="font-headline-md text-headline-md text-surface-container-highest group-hover:text-primary-container transition-colors" id="val-final">--</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Submit Action Sticky Bottom -->
+<div class="fixed bottom-0 right-0 w-full md:w-[65%] lg:w-[calc(100%-400px)] xl:w-[calc(100%-480px)] bg-background/90 backdrop-blur-md border-t border-outline-variant p-6 flex justify-between items-center z-30">
+<div class="hidden sm:block font-label-caps text-label-caps text-text-muted">
+                    PHASE 1/1
+                </div>
+<button class="ml-auto bg-primary hover:bg-primary-fixed text-on-primary px-8 py-4 font-label-caps text-label-caps flex items-center gap-3 transition-colors duration-300">
+                    INITIALIZE ENVIRONMENT
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+        const selectedTech = new Set();
+        let exposure = 'External / Edge';
+        let criticality = 'High';
+
+        function toggleChip(element, techName) {
+            element.classList.toggle('active');
+            if (selectedTech.has(techName)) {
+                selectedTech.delete(techName);
+            } else {
+                selectedTech.add(techName);
+            }
+            updateSummary();
+        }
+
+        function activateSegment(element, group) {
+            const siblings = element.parentElement.children;
+            for (let i = 0; i < siblings.length; i++) {
+                siblings[i].classList.remove('active');
+            }
+            element.classList.add('active');
+            
+            if (group === 'exposure') exposure = element.innerText;
+            if (group === 'criticality') criticality = element.innerText;
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const countEl = document.getElementById('chip-count');
+            const summaryEl = document.getElementById('signal-summary');
+            const hashEl = document.getElementById('mock-hash');
+            
+            countEl.innerText = selectedTech.size;
+            
+            if (selectedTech.size === 0) {
+                summaryEl.innerHTML = '<span class="text-text-muted">Awaiting input...</span> System requires stack definition to construct organizational footprint baseline.';
+                hashEl.innerText = '-----';
+                document.getElementById('val-stack').innerText = '--';
+                document.getElementById('val-context').innerText = '--';
+                document.getElementById('val-final').innerText = '--';
+                return;
+            }
+
+            const techList = Array.from(selectedTech).join(', ');
+            summaryEl.innerHTML = `<span class="text-primary">Profile initialized.</span> Monitoring <strong class="text-on-surface">${techList}</strong> in an <strong class="text-on-surface">${exposure.toLowerCase()}</strong> environment, classified as <strong class="text-on-surface">${criticality.toLowerCase()}</strong> criticality. Intelligence routing adjusted.`;
+            
+            // Mock dynamic hash
+            hashEl.innerText = Math.random().toString(16).substring(2, 10).toUpperCase();
+            
+            // Mock pipeline numbers
+            const baseSignals = 2400000;
+            const stackFiltered = Math.floor(baseSignals * (selectedTech.size * 0.015)); // Arbitrary math for visual
+            const contextFiltered = Math.floor(stackFiltered * (exposure === 'External / Edge' ? 0.3 : 0.05));
+            const priorities = Math.max(1, Math.floor(contextFiltered * 0.01));
+            
+            document.getElementById('val-stack').innerText = (stackFiltered / 1000).toFixed(1) + 'K';
+            document.getElementById('val-context').innerText = contextFiltered.toLocaleString();
+            document.getElementById('val-final').innerText = priorities;
+            
+            // Highlight steps
+            document.querySelectorAll('.pipeline-step').forEach(el => el.classList.add('active'));
+        }
+    </script>
+</body></html>

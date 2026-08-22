@@ -43,78 +43,91 @@ export const TriageView: React.FC<TriageViewProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-      className="space-y-6"
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+      className="space-y-8"
     >
-      {/* Header Banner */}
-      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl cyber-grid">
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
+      {/* Stitch Editorial Header Section */}
+      <header className="border-b border-[#1E2530] pb-8 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-2">
+            <h1 className="font-display text-4xl sm:text-5xl font-bold text-[#00E5FF] tracking-tighter">
+              Security Priorities
+            </h1>
+            <h2 className="font-headline-lg text-xl sm:text-2xl text-[#bac9cc] font-medium">
+              5 vulnerabilities deserve your attention.
+            </h2>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={() => setShowBrief(true)}
+              disabled={!triage || triage.results.length === 0}
+              className="flex items-center gap-2 px-6 py-2.5 bg-[#00E5FF] text-[#0c0e12] font-label-caps font-bold text-xs hover:bg-[#c3f5ff] transition-colors cursor-pointer disabled:opacity-40 uppercase tracking-widest"
+            >
+              <Clock className="h-4 w-4" />
+              <span>60-Second Brief</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onRefresh}
+              disabled={isLoading}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#191c20] hover:bg-[#282a2f] border border-[#3b494c] text-[#F5F7FA] text-xs font-label-caps font-semibold transition-colors cursor-pointer disabled:opacity-40 uppercase tracking-wider"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin text-[#00E5FF]' : ''}`} />
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Compact Context Bar */}
+        <div className="flex flex-wrap items-center gap-4 text-[11px] font-label-caps text-[#bac9cc] tracking-widest uppercase pt-2">
+          <div className="flex items-center gap-3">
             <OrganizationSelector
               profiles={profiles}
               selectedOrgId={selectedOrgId}
               onSelectOrg={onSelectOrg}
               isLoading={isLoading}
             />
-            <span className="text-xs font-mono text-slate-400">
-              • Analysis Snapshot: 2026-Q1
-            </span>
           </div>
-
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            5 vulnerabilities deserve attention
-          </h1>
-
-          <p className="text-xs sm:text-sm text-slate-400 max-w-2xl">
-            Prioritised for <strong className="text-slate-200">{orgName}</strong> based on confirmed threat signals, perimeter exposure, and business service importance.
-          </p>
+          <span className="w-1 h-1 bg-[#3b494c] rounded-full hidden sm:inline-block" />
+          <span className="text-[#00daf3]">
+            {selectedProfile?.sector || 'Enterprise Profile'}
+          </span>
+          <span className="w-1 h-1 bg-[#3b494c] rounded-full hidden sm:inline-block" />
+          <span>
+            {selectedProfile?.technology_count || 4} Technologies Configured
+          </span>
+          <span className="w-1 h-1 bg-[#3b494c] rounded-full hidden sm:inline-block" />
+          <span className="text-[#00E5FF]">
+            Snapshot: 2026-Q1
+          </span>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3 shrink-0">
-          <button
-            type="button"
-            onClick={() => setShowBrief(true)}
-            disabled={!triage || triage.results.length === 0}
-            className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 via-cyan-400 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-xs transition-all shadow-lg shadow-cyan-500/25 cursor-pointer disabled:opacity-50"
-          >
-            <Clock className="h-4 w-4" />
-            <span>60-Second Brief</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onRefresh}
-            disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 text-xs font-bold transition-colors cursor-pointer disabled:opacity-50 shadow-md"
-          >
-            <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin text-cyan-400' : ''}`} />
-            <span>Refresh Analysis</span>
-          </button>
-        </div>
-      </div>
+      </header>
 
       {/* Triage Summary Chips */}
       {triage && !isLoading && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-          <div className="px-4 py-3 rounded-2xl bg-slate-900/70 border border-slate-800/90 flex items-center justify-between text-xs font-mono shadow-sm">
-            <span className="text-slate-400">Total Dataset:</span>
-            <span className="font-extrabold text-white">{triage.summary.total_records}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="px-4 py-3 bg-[#0c0e12] border border-[#1E2530] flex items-center justify-between text-xs font-mono">
+            <span className="text-[#606D7A] text-[10px] font-label-caps uppercase tracking-wider">Total Ingested:</span>
+            <span className="font-bold text-[#F5F7FA]">{triage.summary.total_records}</span>
           </div>
 
-          <div className="px-4 py-3 rounded-2xl bg-slate-900/70 border border-slate-800/90 flex items-center justify-between text-xs font-mono shadow-sm">
-            <span className="text-slate-400">Matched Candidates:</span>
-            <span className="font-extrabold text-cyan-400">{triage.summary.matched_candidates}</span>
+          <div className="px-4 py-3 bg-[#0c0e12] border border-[#1E2530] flex items-center justify-between text-xs font-mono">
+            <span className="text-[#606D7A] text-[10px] font-label-caps uppercase tracking-wider">Candidate Matches:</span>
+            <span className="font-bold text-[#00E5FF]">{triage.summary.matched_candidates}</span>
           </div>
 
-          <div className="px-4 py-3 rounded-2xl bg-slate-900/70 border border-slate-800/90 flex items-center justify-between text-xs font-mono shadow-sm">
-            <span className="text-slate-400">Urgent Level:</span>
-            <span className="font-extrabold text-rose-400">{triage.summary.urgent}</span>
+          <div className="px-4 py-3 bg-[#0c0e12] border border-[#1E2530] flex items-center justify-between text-xs font-mono">
+            <span className="text-[#606D7A] text-[10px] font-label-caps uppercase tracking-wider">Urgent Level:</span>
+            <span className="font-bold text-[#FF3B30]">{triage.summary.urgent}</span>
           </div>
 
-          <div className="px-4 py-3 rounded-2xl bg-slate-900/70 border border-slate-800/90 flex items-center justify-between text-xs font-mono shadow-sm">
-            <span className="text-slate-400">High Level:</span>
-            <span className="font-extrabold text-amber-400">{triage.summary.high}</span>
+          <div className="px-4 py-3 bg-[#0c0e12] border border-[#1E2530] flex items-center justify-between text-xs font-mono">
+            <span className="text-[#606D7A] text-[10px] font-label-caps uppercase tracking-wider">High Level:</span>
+            <span className="font-bold text-[#FF9500]">{triage.summary.high}</span>
           </div>
         </div>
       )}
@@ -140,7 +153,7 @@ export const TriageView: React.FC<TriageViewProps> = ({
 
       {/* Main Top 5 Cards */}
       {!isLoading && !error && triage && triage.results.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {triage.results.map((item, idx) => (
             <VulnerabilityCard
               key={item.cve_id}

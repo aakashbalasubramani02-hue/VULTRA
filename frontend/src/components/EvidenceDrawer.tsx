@@ -58,7 +58,7 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 overflow-hidden bg-black/70 backdrop-blur-xs flex justify-end">
+      <div className="fixed inset-0 z-50 overflow-hidden bg-[#0c0e12]/80 backdrop-blur-sm flex justify-end">
         <div
           className="fixed inset-0"
           onClick={onClose}
@@ -69,48 +69,48 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
-          transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-          className="relative w-full max-w-xl bg-slate-900 border-l border-slate-800 shadow-2xl h-full flex flex-col z-10 overflow-hidden"
+          transition={{ type: 'spring', damping: 30, stiffness: 350 }}
+          className="relative w-full max-w-2xl bg-[#111318] border-l border-[#3b494c] shadow-2xl h-full flex flex-col z-10 overflow-hidden"
         >
           {/* Forensic Sticky Header */}
-          <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/90 backdrop-blur-md sticky top-0 z-20">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-inner">
-                <FileText className="h-5 w-5" />
+          <div className="p-6 border-b border-[#3b494c] flex items-center justify-between bg-[#11141B] sticky top-0 z-20">
+            <div className="flex items-center gap-3.5">
+              <div className="w-9 h-9 bg-[#191c20] border border-[#3b494c] flex items-center justify-center text-[#00E5FF]">
+                <FileText className="h-4 w-4" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-cyan-400">
-                    Forensic Evidence Panel
+                  <span className="text-[10px] font-label-caps font-bold uppercase tracking-widest text-[#00E5FF]">
+                    FORENSIC EVIDENCE PANEL
                   </span>
-                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-300">
-                    Read-Only
+                  <span className="text-[9px] font-mono px-1.5 py-0.5 bg-[#0c0e12] text-[#bac9cc] border border-[#1E2530]">
+                    IMMUTABLE SNAPSHOT
                   </span>
                 </div>
-                <h2 className="text-lg font-extrabold text-white font-mono">{cveId}</h2>
+                <h2 className="text-xl font-bold text-[#F5F7FA] font-mono">{cveId}</h2>
               </div>
             </div>
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer"
+              className="p-2 bg-[#191c20] hover:bg-[#282a2f] border border-[#3b494c] text-[#bac9cc] hover:text-[#F5F7FA] transition-colors cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
 
           {/* Content Body */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
             {isLoading && (
-              <div className="space-y-4 py-12 text-center text-slate-400">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
-                <p className="text-xs font-mono">Retrieving deterministic evidence & source facts...</p>
+              <div className="space-y-4 py-16 text-center text-[#606D7A]">
+                <div className="inline-block h-8 w-8 animate-spin border-2 border-[#00E5FF] border-t-transparent" />
+                <p className="text-xs font-mono text-[#bac9cc]">Retrieving deterministic evidence & source facts...</p>
               </div>
             )}
 
             {error && (
-              <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-3">
-                <AlertCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
+              <div className="p-4 bg-[#FF3B30]/10 border border-[#FF3B30]/30 text-[#ffb4ab] text-xs flex items-start gap-3">
+                <AlertCircle className="h-4 w-4 text-[#FF3B30] shrink-0 mt-0.5" />
                 <div>
                   <p className="font-bold">Evidence Unavailable</p>
                   <p className="mt-1">{error}</p>
@@ -121,54 +121,56 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
             {evidence && !isLoading && (
               <>
                 {/* Summary Status Box */}
-                <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                <div className="p-5 bg-[#0c0e12] border border-[#1E2530] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-400 font-mono">
-                      Decision for {evidence.profile_name} ({evidence.profile_id})
+                    <span className="text-[11px] text-[#606D7A] font-label-caps uppercase tracking-wider">
+                      DECISION FOR {evidence.profile_name} ({evidence.profile_id})
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold font-mono bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                      {evidence.priority} ({evidence.score_100.toFixed(1)} / 100)
+                    <span className="px-2.5 py-0.5 text-xs font-bold font-mono bg-[#FF3B30]/10 text-[#FF3B30] border border-[#FF3B30]/30">
+                      {evidence.priority} ({evidence.score_100.toFixed(1)} / 100 PTS)
                     </span>
                   </div>
-                  <div className="text-sm font-bold text-white leading-snug">
+                  <div className="text-base font-bold text-[#F5F7FA] leading-snug">
                     {evidence.explanation.title}
                   </div>
                 </div>
 
                 {/* 1. Source Facts */}
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
-                      <Activity className="h-4 w-4 text-blue-400" />
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#1E2530] pb-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#F5F7FA] uppercase tracking-widest font-label-caps">
+                      <Activity className="h-4 w-4 text-[#00E5FF]" />
                       <span>1. Source Technical Facts</span>
                     </div>
-                    <span className="badge-source">SOURCE FACT</span>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00E5FF]">
+                      RAW TELEMETRY
+                    </span>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 text-xs font-mono grid grid-cols-2 gap-3.5 shadow-inner">
+                  <div className="p-4 bg-[#0c0e12] border border-[#1E2530] text-xs font-mono grid grid-cols-2 gap-4">
                     <div>
-                      <span className="text-slate-500 block text-[10px]">Product In Disclosure</span>
-                      <span className="text-slate-200 font-semibold">{evidence.source_facts.product_name}</span>
+                      <span className="text-[#606D7A] block text-[10px] font-label-caps">PRODUCT IN DISCLOSURE</span>
+                      <span className="text-[#F5F7FA] font-semibold">{evidence.source_facts.product_name}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block text-[10px]">Technical CVSS Base</span>
-                      <span className="text-slate-200 font-semibold">{evidence.source_facts.cvss_base_score.toFixed(1)}</span>
+                      <span className="text-[#606D7A] block text-[10px] font-label-caps">CVSS BASE SEVERITY</span>
+                      <span className="text-[#F5F7FA] font-semibold">{evidence.source_facts.cvss_base_score.toFixed(1)} / 10.0</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block text-[10px]">CISA KEV Status</span>
-                      <span className={`font-semibold ${evidence.source_facts.cisa_kev ? 'text-rose-400' : 'text-slate-400'}`}>
-                        {evidence.source_facts.cisa_kev ? 'Confirmed Weaponised (YES)' : 'No active flag'}
+                      <span className="text-[#606D7A] block text-[10px] font-label-caps">CISA KEV WEAPONISATION</span>
+                      <span className={`font-semibold ${evidence.source_facts.cisa_kev ? 'text-[#FF3B30]' : 'text-[#606D7A]'}`}>
+                        {evidence.source_facts.cisa_kev ? 'CONFIRMED WEAPONISED (YES)' : 'No active flag'}
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block text-[10px]">FIRST EPSS Probability</span>
-                      <span className="text-amber-400 font-semibold">
+                      <span className="text-[#606D7A] block text-[10px] font-label-caps">FIRST EPSS PROBABILITY</span>
+                      <span className="text-[#FF9500] font-semibold">
                         {(evidence.source_facts.first_epss * 100).toFixed(2)}%
                       </span>
                     </div>
-                    <div className="col-span-2 pt-2.5 border-t border-slate-800/80">
-                      <span className="text-slate-500 block text-[10px]">Snapshot Origin</span>
-                      <span className="text-slate-300">
+                    <div className="col-span-2 pt-3 border-t border-[#1E2530]">
+                      <span className="text-[#606D7A] block text-[10px] font-label-caps">SNAPSHOT PROVENANCE</span>
+                      <span className="text-[#bac9cc]">
                         {evidence.source_facts.source_file} • {evidence.source_facts.snapshot_date}
                       </span>
                     </div>
@@ -178,9 +180,9 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
                           href={evidence.source_facts.reference_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 underline font-sans"
+                          className="inline-flex items-center gap-1.5 text-xs text-[#00E5FF] hover:underline font-label-caps tracking-wider uppercase"
                         >
-                          <span>Open Official NVD Advisory Evidence</span>
+                          <span>Open Official NVD Advisory Reference</span>
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       </div>
@@ -189,37 +191,39 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
                 </div>
 
                 {/* 2. Organisation Context */}
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
-                      <Server className="h-4 w-4 text-cyan-400" />
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#1E2530] pb-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#F5F7FA] uppercase tracking-widest font-label-caps">
+                      <Server className="h-4 w-4 text-[#00E5FF]" />
                       <span>2. Asset & Exposure Context</span>
                     </div>
-                    <span className="badge-decision">CONTEXT FACT</span>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00daf3]">
+                      DEPLOYMENT
+                    </span>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 text-xs space-y-2.5 shadow-inner">
-                    <div className="flex justify-between py-1 border-b border-slate-800/60">
-                      <span className="text-slate-400">Deployed Service</span>
-                      <span className="font-semibold text-white">
+                  <div className="p-4 bg-[#0c0e12] border border-[#1E2530] text-xs space-y-2.5">
+                    <div className="flex justify-between py-1 border-b border-[#1E2530]">
+                      <span className="text-[#606D7A] font-label-caps text-[10px]">DEPLOYED SERVICE</span>
+                      <span className="font-semibold text-[#F5F7FA]">
                         {evidence.asset_context.service || 'Not specified in profile'}
                       </span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-slate-800/60">
-                      <span className="text-slate-400">Perimeter Reachability</span>
-                      <span className="font-bold uppercase text-cyan-300 font-mono">
+                    <div className="flex justify-between py-1 border-b border-[#1E2530]">
+                      <span className="text-[#606D7A] font-label-caps text-[10px]">PERIMETER EXPOSURE</span>
+                      <span className="font-bold uppercase text-[#00E5FF] font-mono">
                         {evidence.asset_context.exposure}
                       </span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-slate-800/60">
-                      <span className="text-slate-400">Service Criticality</span>
-                      <span className="font-bold uppercase text-indigo-300 font-mono">
+                    <div className="flex justify-between py-1 border-b border-[#1E2530]">
+                      <span className="text-[#606D7A] font-label-caps text-[10px]">SERVICE CRITICALITY</span>
+                      <span className="font-bold uppercase text-[#c3f5ff] font-mono">
                         {evidence.asset_context.importance}
                       </span>
                     </div>
                     <div className="flex justify-between py-1">
-                      <span className="text-slate-400">Installed Version</span>
-                      <span className="font-mono text-slate-300">
+                      <span className="text-[#606D7A] font-label-caps text-[10px]">INSTALLED VERSION</span>
+                      <span className="font-mono text-[#bac9cc]">
                         {evidence.asset_context.installed_version || 'Unspecified in profile'}
                       </span>
                     </div>
@@ -227,36 +231,40 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
                 </div>
 
                 {/* 3. Decision Rationale */}
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
-                      <Shield className="h-4 w-4 text-cyan-400" />
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#1E2530] pb-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#F5F7FA] uppercase tracking-widest font-label-caps">
+                      <Shield className="h-4 w-4 text-[#00E5FF]" />
                       <span>3. Matching & Relevance Rationale</span>
                     </div>
-                    <span className="badge-decision">ENGINE DECISION</span>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#FFCC00]">
+                      ENGINE MATCH
+                    </span>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 text-xs space-y-2 shadow-inner">
+                  <div className="p-4 bg-[#0c0e12] border border-[#1E2530] text-xs space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-400">Match Outcome</span>
-                      <span className="font-mono px-2 py-0.5 rounded bg-slate-800 text-cyan-300 font-bold">
+                      <span className="text-[#606D7A] font-label-caps text-[10px]">MATCH OUTCOME</span>
+                      <span className="font-mono px-2 py-0.5 bg-[#191c20] text-[#00E5FF] font-bold border border-[#3b494c]">
                         {evidence.matching.outcome} ({evidence.matching.reason_code})
                       </span>
                     </div>
-                    <p className="text-slate-300 text-xs leading-relaxed mt-1">
+                    <p className="text-[#bac9cc] text-xs leading-relaxed mt-1">
                       {evidence.matching.match_reason}
                     </p>
                   </div>
                 </div>
 
                 {/* 4. Score Factors Contribution */}
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
-                      <Layers className="h-4 w-4 text-cyan-400" />
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#1E2530] pb-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#F5F7FA] uppercase tracking-widest font-label-caps">
+                      <Layers className="h-4 w-4 text-[#00E5FF]" />
                       <span>4. Multi-Signal Score Point Share</span>
                     </div>
-                    <span className="badge-provenance">POINT SHARE</span>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00E5FF]">
+                      0–100 POINTS
+                    </span>
                   </div>
 
                   <ScoreBreakdown
@@ -272,12 +280,12 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
                 </div>
 
                 {/* 5. Safe Next Action */}
-                <div className="p-4.5 rounded-2xl bg-cyan-950/20 border border-cyan-500/30 text-xs space-y-1.5 shadow-sm">
-                  <div className="flex items-center gap-2 text-cyan-400 font-bold uppercase tracking-wider font-mono">
+                <div className="p-5 bg-[#0c0e12] border border-[#00E5FF]/40 text-xs space-y-2">
+                  <div className="flex items-center gap-2 text-[#00E5FF] font-bold uppercase tracking-widest font-label-caps">
                     <Sparkles className="h-4 w-4" />
                     <span>Recommended Defensive Action</span>
                   </div>
-                  <p className="text-cyan-100 font-semibold leading-relaxed">
+                  <p className="text-[#c3f5ff] font-semibold leading-relaxed text-[13px]">
                     {evidence.explanation.safe_next_action}
                   </p>
                 </div>
@@ -286,12 +294,12 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
           </div>
 
           {/* Drawer Sticky Footer */}
-          <div className="p-4 border-t border-slate-800 bg-slate-950/90 flex justify-end">
+          <div className="p-4 border-t border-[#3b494c] bg-[#11141B] flex justify-end">
             <button
               onClick={onClose}
-              className="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-bold transition-colors cursor-pointer"
+              className="px-6 py-2 bg-[#191c20] hover:bg-[#282a2f] border border-[#3b494c] text-[#F5F7FA] text-xs font-label-caps tracking-widest uppercase transition-colors cursor-pointer"
             >
-              Close Evidence Drawer
+              Close Forensic Panel
             </button>
           </div>
         </motion.aside>

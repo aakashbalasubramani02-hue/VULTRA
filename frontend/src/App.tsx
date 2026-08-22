@@ -38,7 +38,7 @@ export const App: React.FC = () => {
       .catch(() => {
         if (isMounted) {
           setIsBackendConnected(false);
-          setApiError('VULTRA FastAPI backend is currently unreachable at http://127.0.0.1:8000 (or 8001).');
+          setApiError('VULTRA FastAPI backend is currently unreachable.');
         }
       });
 
@@ -94,8 +94,8 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#080c14] text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Persistent Navigation Shell */}
+    <div className="min-h-screen bg-[#111318] text-[#F5F7FA] flex flex-col font-sans selection:bg-[#00E5FF] selection:text-[#0c0e12] overflow-x-hidden">
+      {/* Fixed Top Editorial Navigation */}
       <Navbar
         currentView={currentView}
         onViewChange={(view) => setCurrentView(view)}
@@ -105,16 +105,16 @@ export const App: React.FC = () => {
 
       {/* Backend Offline Warning Banner */}
       {!isBackendConnected && (
-        <div className="bg-rose-500/15 border-b border-rose-500/30 px-4 py-2.5 text-center text-xs text-rose-300 flex items-center justify-center gap-2">
-          <AlertTriangle className="h-4 w-4 text-rose-400 shrink-0" />
+        <div className="mt-16 bg-[#FF3B30]/15 border-b border-[#FF3B30]/30 px-4 py-2 text-center text-xs text-[#ffb4ab] flex items-center justify-center gap-2">
+          <AlertTriangle className="h-4 w-4 text-[#FF3B30] shrink-0" />
           <span>
-            FastAPI backend is offline. Run <code className="bg-slate-900 px-1.5 py-0.5 rounded font-mono text-white">python -m uvicorn backend.main:app --port 8000</code> to connect.
+            FastAPI backend is offline. Run <code className="bg-[#0c0e12] px-1.5 py-0.5 font-mono text-[#F5F7FA]">python -m uvicorn backend.main:app --port 8000</code> to connect.
           </span>
         </div>
       )}
 
-      {/* Main Dynamic Content Area with AnimatePresence */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Structural Canvas */}
+      <main className="flex-1 max-w-[1600px] w-full mx-auto px-6 md:px-10 pt-24 pb-16">
         <AnimatePresence mode="wait">
           {currentView === 'command' && (
             <CommandCenterView
@@ -168,19 +168,19 @@ export const App: React.FC = () => {
         </AnimatePresence>
       </main>
 
-      {/* Enterprise Forensic Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-950/80 mt-auto backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-mono">
+      {/* Editorial Footer */}
+      <footer className="border-t border-[#1E2530] bg-[#0c0e12] mt-auto">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#606D7A] font-mono">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-cyan-400" />
-            <span>VULTRA v1.0 • Personalised Vulnerability Decision Intelligence</span>
+            <ShieldCheck className="h-4 w-4 text-[#00E5FF]" />
+            <span className="text-[#bac9cc]">VULTRA • Cyber Intelligence Editorial</span>
           </div>
-          <div className="flex items-center gap-4 text-slate-400">
+          <div className="flex items-center gap-4 text-[#606D7A]">
             <span>Deterministic Scoring</span>
             <span>•</span>
             <span>Zero External API Dependency</span>
             <span>•</span>
-            <span>Defensive Cyber Architecture</span>
+            <span>Level 0 Sharp Geometry</span>
           </div>
         </div>
       </footer>

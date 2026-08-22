@@ -60,72 +60,72 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0c0e12]/85 backdrop-blur-sm">
         <motion.div
-          initial={{ opacity: 0, scale: 0.96, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.96, y: 10 }}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.2 }}
-          className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-slate-900 border border-slate-700 shadow-2xl p-6 md:p-8 space-y-6"
+          className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#111318] border border-[#3b494c] shadow-2xl p-6 md:p-8 space-y-6"
         >
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer"
+            className="absolute top-6 right-6 p-2 bg-[#191c20] hover:bg-[#282a2f] border border-[#3b494c] text-[#bac9cc] hover:text-[#F5F7FA] transition-colors cursor-pointer"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
 
           {/* Header */}
           <div className="flex items-center gap-3.5">
-            <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-cyan-500 via-cyan-400 to-blue-600 flex items-center justify-center text-slate-950 shadow-lg shadow-cyan-500/25">
-              <Bot className="h-6 w-6" />
+            <div className="w-10 h-10 bg-[#00E5FF] flex items-center justify-center text-[#0c0e12]">
+              <Bot className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-cyan-400">
+                <span className="text-[10px] font-label-caps font-bold uppercase tracking-widest text-[#00E5FF]">
                   VULTRA Copilot
                 </span>
-                <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
-                  Source-Bound Assistant
+                <span className="text-[9px] font-mono px-2 py-0.5 bg-[#0c0e12] text-[#00daf3] border border-[#00daf3]/30 uppercase">
+                  Source-Bound Fact Guard
                 </span>
               </div>
-              <h2 className="text-xl font-extrabold text-white">
+              <h2 className="text-xl font-bold text-[#F5F7FA]">
                 Decision Explanation for {item.cve_id}
               </h2>
             </div>
           </div>
 
           {/* Official Priority Lock Header */}
-          <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 flex items-center justify-between flex-wrap gap-2 text-xs font-mono">
+          <div className="p-4 bg-[#0c0e12] border border-[#1E2530] flex items-center justify-between flex-wrap gap-2 text-xs font-mono">
             <div className="flex items-center gap-2">
-              <span className="text-slate-400">Official Deterministic Priority:</span>
-              <span className="font-extrabold text-cyan-400">{item.score.toFixed(1)} / 100 pts</span>
-              <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">
-                Rank #{item.rank} ({item.priority})
+              <span className="text-[#606D7A] font-label-caps">OFFICIAL DETERMINISTIC SCORE:</span>
+              <span className="font-extrabold text-[#00E5FF]">{item.score.toFixed(1)} / 100 PTS</span>
+              <span className="px-2 py-0.5 bg-[#191c20] text-[#F5F7FA] border border-[#3b494c]">
+                RANK #{item.rank} ({item.priority})
               </span>
             </div>
-            <span className="text-[11px] text-slate-400">
-              Organisation: <strong className="text-slate-200">{orgName}</strong>
+            <span className="text-[11px] text-[#606D7A]">
+              ORG: <strong className="text-[#F5F7FA]">{orgName}</strong>
             </span>
           </div>
 
           {/* Loading State */}
           {isLoading && (
-            <div className="py-12 text-center space-y-3">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
-              <p className="text-xs font-mono text-cyan-300 animate-pulse">
-                Analyzing supplied structured evidence with VULTRA Copilot...
+            <div className="py-16 text-center space-y-3">
+              <div className="inline-block h-8 w-8 animate-spin border-2 border-[#00E5FF] border-t-transparent" />
+              <p className="text-xs font-mono text-[#00daf3]">
+                Synthesizing verified structured evidence with VULTRA Copilot...
               </p>
             </div>
           )}
 
           {/* Error State */}
           {error && (
-            <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-3">
-              <AlertTriangle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
+            <div className="p-4 bg-[#FF3B30]/10 border border-[#FF3B30]/30 text-[#ffb4ab] text-xs flex items-start gap-3">
+              <AlertTriangle className="h-4 w-4 text-[#FF3B30] shrink-0 mt-0.5" />
               <div>
-                <p className="font-bold">AI Explanation Failed</p>
+                <p className="font-bold">AI Explanation Unavailable</p>
                 <p className="mt-1">{error}</p>
               </div>
             </div>
@@ -135,79 +135,79 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
           {!isLoading && aiData && (
             <div className="space-y-4">
               {/* Runtime Mode Status Bar */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] font-mono">
+              <div className="flex items-center justify-between p-3 bg-[#0c0e12] border border-[#1E2530] text-[11px] font-mono">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`h-2 w-2 rounded-full ${
-                      aiData.ai.mode === 'local' ? 'bg-emerald-400 animate-pulse' : 'bg-cyan-400'
+                    className={`w-2 h-2 rounded-full ${
+                      aiData.ai.mode === 'local' ? 'bg-[#00E5FF] animate-pulse' : 'bg-[#00daf3]'
                     }`}
                   />
-                  <span className="font-bold text-slate-200">
-                    {aiData.ai.mode === 'local' ? 'LOCAL AI' : 'DETERMINISTIC FALLBACK'}
+                  <span className="font-bold text-[#F5F7FA]">
+                    {aiData.ai.mode === 'local' ? 'LOCAL AI (ACTIVE)' : 'DETERMINISTIC FALLBACK'}
                   </span>
-                  <span className="text-slate-500">•</span>
-                  <span className="text-slate-400">
+                  <span className="text-[#3b494c]">•</span>
+                  <span className="text-[#606D7A]">
                     {aiData.ai.mode === 'local'
                       ? `Model: ${aiData.ai.model || 'Ollama instruct'}`
-                      : 'No External AI Required'}
+                      : 'No External AI Dependency'}
                   </span>
                 </div>
 
-                <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/25 font-bold">
+                <span className="px-2 py-0.5 bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30 font-bold font-label-caps text-[10px] tracking-wider uppercase">
                   {aiData.fact_guard.status === 'PASSED' ? 'Fact Guard PASSED' : 'Fallback Verified'}
                 </span>
               </div>
 
               {/* 1. Why This Matters */}
-              <div className="p-4.5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-1.5 shadow-sm">
-                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">
+              <div className="p-5 bg-[#0c0e12] border border-[#1E2530] space-y-2">
+                <div className="flex items-center gap-2 text-[#00E5FF] text-xs font-label-caps font-bold uppercase tracking-widest">
                   <ShieldAlert className="h-3.5 w-3.5" />
                   <span>Why This Matters</span>
                 </div>
-                <p className="text-xs text-slate-200 leading-relaxed font-sans">
+                <p className="text-xs text-[#bac9cc] leading-relaxed">
                   {aiData.explanation.why_it_matters}
                 </p>
               </div>
 
               {/* 2. Potential Impact */}
-              <div className="p-4.5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-1.5 shadow-sm">
-                <div className="flex items-center gap-2 text-amber-400 text-xs font-mono font-bold uppercase tracking-wider">
+              <div className="p-5 bg-[#0c0e12] border border-[#1E2530] space-y-2">
+                <div className="flex items-center gap-2 text-[#FF9500] text-xs font-label-caps font-bold uppercase tracking-widest">
                   <Cpu className="h-3.5 w-3.5" />
-                  <span>Potential Business & Infrastructure Impact</span>
+                  <span>Potential Operational & Infrastructure Impact</span>
                 </div>
-                <p className="text-xs text-slate-200 leading-relaxed font-sans">
+                <p className="text-xs text-[#bac9cc] leading-relaxed">
                   {aiData.explanation.potential_impact}
                 </p>
               </div>
 
               {/* 3. Recommended Next Action */}
-              <div className="p-4.5 rounded-2xl bg-cyan-950/25 border border-cyan-500/30 space-y-1.5 shadow-sm">
-                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">
+              <div className="p-5 bg-[#0c0e12] border border-[#00E5FF]/40 space-y-2">
+                <div className="flex items-center gap-2 text-[#00E5FF] text-xs font-label-caps font-bold uppercase tracking-widest">
                   <Sparkles className="h-3.5 w-3.5" />
                   <span>Recommended Safe Next Action</span>
                 </div>
-                <p className="text-xs text-cyan-100 font-semibold leading-relaxed font-sans">
+                <p className="text-xs text-[#c3f5ff] font-semibold leading-relaxed">
                   {aiData.explanation.next_action}
                 </p>
               </div>
 
-              {/* Compact Trust & Fact Guard Panel */}
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2.5 text-xs">
-                <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
-                  <div className="flex items-center gap-2 text-slate-300 font-mono font-bold">
-                    <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                    <span>SOURCE-BOUND FACT GUARD</span>
+              {/* Fact Guard Verification Matrix */}
+              <div className="p-4 bg-[#0c0e12] border border-[#1E2530] space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-[#1E2530] pb-2">
+                  <div className="flex items-center gap-2 text-[#F5F7FA] font-label-caps tracking-wider uppercase font-bold text-[11px]">
+                    <ShieldCheck className="h-4 w-4 text-[#00E5FF]" />
+                    <span>SOURCE-BOUND FACT GUARD VALIDATION</span>
                   </div>
-                  <span className="text-[10px] font-mono text-slate-400">
-                    Uses supplied evidence only
+                  <span className="text-[10px] font-mono text-[#606D7A]">
+                    Strict Zero-Hallucination Barrier
                   </span>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 pt-1 font-mono text-[10px]">
+                <div className="flex flex-wrap gap-2 pt-1 font-mono text-[10px]">
                   {aiData.fact_guard.checks_performed.map((chk, i) => (
                     <span
                       key={i}
-                      className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700"
+                      className="px-2 py-0.5 bg-[#191c20] text-[#bac9cc] border border-[#3b494c]"
                     >
                       ✓ {chk.replace(/_/g, ' ')}
                     </span>
@@ -216,20 +216,20 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
               </div>
 
               {/* Safety Notice */}
-              <p className="text-[10px] text-slate-500 font-mono leading-relaxed pt-1">
-                * AI explanations are informational summaries of supplied evidence. They do not determine vulnerability priority and do not establish that an organisation is secure.
+              <p className="text-[10px] text-[#606D7A] font-mono leading-relaxed pt-1">
+                * AI explanations are informational summaries of supplied evidence. They do not determine vulnerability priority and do not alter deterministic engine decisions.
               </p>
             </div>
           )}
 
           {/* Footer Actions */}
-          <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+          <div className="pt-4 border-t border-[#1E2530] flex items-center justify-between">
             <button
               onClick={() => {
                 onClose();
                 onViewEvidence(item.cve_id);
               }}
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-label-caps tracking-wider uppercase text-[#00E5FF] hover:underline cursor-pointer"
             >
               <span>Inspect Raw Forensic Evidence</span>
               <ArrowRight className="h-3 w-3" />
@@ -237,7 +237,7 @@ export const CopilotModal: React.FC<CopilotModalProps> = ({
 
             <button
               onClick={onClose}
-              className="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-bold transition-colors cursor-pointer"
+              className="px-6 py-2 bg-[#191c20] hover:bg-[#282a2f] border border-[#3b494c] text-[#F5F7FA] text-xs font-label-caps tracking-widest uppercase transition-colors cursor-pointer"
             >
               Close Copilot
             </button>

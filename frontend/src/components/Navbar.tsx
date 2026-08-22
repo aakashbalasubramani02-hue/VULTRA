@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Activity, GitCompare, HelpCircle, BookOpen, Layers, Lock } from 'lucide-react';
+import { Shield, Activity, GitCompare, HelpCircle, BookOpen, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export type NavView = 'command' | 'triage' | 'compare' | 'whynot' | 'methodology';
@@ -17,102 +17,98 @@ export const Navbar: React.FC<NavbarProps> = ({
   isBackendConnected,
 }) => {
   const navItems = [
-    { id: 'command' as NavView, label: 'Command Center', icon: Layers },
-    { id: 'triage' as NavView, label: 'Triage Decisions', icon: Activity },
-    { id: 'compare' as NavView, label: 'Compare Profiles', icon: GitCompare },
-    { id: 'whynot' as NavView, label: 'Why Not? (Negative Test)', icon: HelpCircle },
+    { id: 'command' as NavView, label: 'Overview', icon: Layers },
+    { id: 'triage' as NavView, label: 'Priorities', icon: Activity },
+    { id: 'compare' as NavView, label: 'Comparison', icon: GitCompare },
+    { id: 'whynot' as NavView, label: 'Negative Test', icon: HelpCircle },
     { id: 'methodology' as NavView, label: 'Methodology', icon: BookOpen },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#080c14]/90 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="fixed top-0 w-full z-50 bg-[#111318]/90 backdrop-blur-md border-b border-[#3b494c] transition-all duration-300">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
         {/* Brand */}
         <div 
           onClick={() => onViewChange('command')} 
-          className="flex items-center gap-3.5 cursor-pointer group"
+          className="flex items-center gap-6 cursor-pointer group"
         >
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 via-cyan-400 to-blue-600 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300">
-            <div className="h-full w-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Shield className="h-5 w-5 text-cyan-400 group-hover:scale-105 transition-transform" />
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-[#00E5FF] text-[#0c0e12] flex items-center justify-center font-bold font-mono">
+              <Shield className="w-4 h-4 text-[#0c0e12]" />
             </div>
+            <span className="font-display font-extrabold text-2xl tracking-tighter text-[#00E5FF]">
+              VULTRA
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold tracking-wider text-lg text-white font-mono">VULTRA</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/25">
-                Decision Intelligence
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 hidden sm:block">From signals to five defensible actions</p>
+
+          <div className="hidden lg:flex items-center gap-2 pl-4 border-l border-[#3b494c]">
+            <span className="font-label-caps text-[10px] text-[#bac9cc] tracking-widest uppercase">
+              Precision Risk Intelligence
+            </span>
           </div>
         </div>
 
-        {/* Center Nav Links with Motion */}
-        <nav className="hidden md:flex items-center gap-1 bg-slate-900/70 p-1.5 rounded-2xl border border-slate-800/90 shadow-inner">
+        {/* Center Nav Links with Editorial Precision */}
+        <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
-            const Icon = item.icon;
             const isActive = currentView === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => onViewChange(item.id)}
-                className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors duration-200 cursor-pointer ${
+                className={`relative px-4 py-2 font-label-caps text-[11px] tracking-widest uppercase transition-colors cursor-pointer ${
                   isActive
-                    ? 'text-cyan-300'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                    ? 'text-[#00E5FF] font-bold'
+                    : 'text-[#606D7A] hover:text-[#F5F7FA]'
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="activeNavTab"
-                    className="absolute inset-0 bg-cyan-500/15 border border-cyan-500/35 rounded-xl shadow-sm shadow-cyan-500/10"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#00E5FF]"
+                    transition={{ type: 'spring', stiffness: 450, damping: 35 }}
                   />
                 )}
-                <Icon className={`h-4 w-4 relative z-10 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
-                <span className="relative z-10">{item.label}</span>
+                <span>{item.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* Right Badge Status */}
-        <div className="flex items-center gap-3">
-          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-[10px] font-mono text-slate-400">
-            <Lock className="h-3 w-3 text-cyan-400" />
-            <span>OFFLINE SECURE</span>
-          </div>
-
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-800 text-[11px] font-mono">
+        {/* Right Status & Launch CTA */}
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 border border-[#3b494c] bg-[#0c0e12] text-[10px] font-label-caps tracking-widest text-[#bac9cc]">
             <span
-              className={`h-2 w-2 rounded-full ${
-                isBackendConnected ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'
+              className={`w-1.5 h-1.5 rounded-full ${
+                isBackendConnected ? 'bg-[#00E5FF] animate-pulse' : 'bg-[#FF3B30]'
               }`}
             />
-            <span className={isBackendConnected ? 'text-emerald-400 font-semibold' : 'text-rose-400 font-semibold'}>
-              {isBackendConnected ? 'API Connected' : 'API Offline'}
-            </span>
+            <span>{isBackendConnected ? 'LIVE FEED' : 'OFFLINE'}</span>
           </div>
+
+          <button
+            onClick={() => onViewChange('triage')}
+            className="bg-[#00E5FF] text-[#0c0e12] font-label-caps text-[11px] px-5 py-2 hover:bg-[#c3f5ff] transition-colors font-bold tracking-widest uppercase cursor-pointer"
+          >
+            Launch Analysis
+          </button>
         </div>
       </div>
 
       {/* Mobile Navigation Bar */}
-      <div className="md:hidden flex overflow-x-auto px-4 py-2 border-t border-slate-800/60 gap-1.5 bg-slate-950/90">
+      <div className="md:hidden flex overflow-x-auto px-4 py-2 border-t border-[#3b494c] gap-1 bg-[#0c0e12]">
         {navItems.map((item) => {
-          const Icon = item.icon;
           const isActive = currentView === item.id;
           return (
             <button
               key={item.id}
               onClick={() => onViewChange(item.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs whitespace-nowrap font-medium transition-all ${
+              className={`px-3 py-1.5 font-label-caps text-[10px] tracking-widest uppercase whitespace-nowrap ${
                 isActive
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                  : 'text-slate-400 hover:text-slate-200 bg-slate-900/50'
+                  ? 'bg-[#00E5FF]/10 text-[#00E5FF] border-b border-[#00E5FF]'
+                  : 'text-[#606D7A] hover:text-[#F5F7FA]'
               }`}
             >
-              <Icon className="h-3.5 w-3.5" />
               {item.label}
             </button>
           );

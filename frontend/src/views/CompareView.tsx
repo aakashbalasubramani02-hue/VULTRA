@@ -4,9 +4,7 @@ import { api } from '../api/client';
 import { SkeletonLoader } from '../components/SkeletonLoader';
 import { ErrorBanner } from '../components/ErrorBanner';
 import {
-  GitCompare,
   ArrowRight,
-  Sparkles,
   TrendingDown,
   TrendingUp,
   Minus,
@@ -53,75 +51,102 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-      className="space-y-8"
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+      className="space-y-12"
     >
-      {/* Header Banner */}
-      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 shadow-xl space-y-5 cyber-grid">
-        <div className="flex items-center gap-3.5">
-          <div className="h-11 w-11 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner">
-            <GitCompare className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-blue-400">
-              Cross-Organisation Priority Comparison
+      {/* Stitch Editorial Header Section */}
+      <header className="text-center max-w-3xl mx-auto space-y-4 pt-4">
+        <h1 className="font-display text-4xl sm:text-5xl font-bold text-[#F5F7FA] leading-tight">
+          Change the context.<br />
+          <span className="text-[#00E5FF]">Watch the priorities change.</span>
+        </h1>
+        <p className="font-body-lg text-[#bac9cc] leading-relaxed">
+          Vulnerability scoring is static. True risk is dynamic. Observe how contextual intelligence dramatically reorganizes remediation priorities based on environment and exposure.
+        </p>
+      </header>
+
+      {/* Context Selectors Side-by-Side */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Profile A Card */}
+        <div className="panel-depth p-6 border border-[#1E2530] hover:border-[#00E5FF]/60 transition-colors relative group">
+          <div className="flex justify-between items-start mb-6">
+            <div>
+              <span className="font-label-caps text-[10px] text-[#606D7A] uppercase tracking-widest block mb-1">
+                PROFILE CONTEXT A
+              </span>
+              <select
+                value={profileA}
+                onChange={(e) => setProfileA(e.target.value)}
+                className="bg-[#0c0e12] border border-[#3b494c] text-[#F5F7FA] font-bold text-sm px-3 py-2 cursor-pointer focus:border-[#00E5FF] outline-none"
+              >
+                {profiles.map((p) => (
+                  <option key={p.profile_id} value={p.profile_id}>
+                    {p.name} ({p.profile_id})
+                  </option>
+                ))}
+              </select>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Organisation Profile Comparison
-            </h1>
+            <span className="text-xs font-mono px-2 py-0.5 bg-[#0c0e12] text-[#00E5FF] border border-[#3b494c]">
+              {profileA}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 text-xs font-mono pt-2 border-t border-[#1E2530]">
+            <div>
+              <span className="font-label-caps text-[9px] text-[#606D7A] block">SECTOR</span>
+              <span className="text-[#F5F7FA] font-bold">
+                {profiles.find((p) => p.profile_id === profileA)?.sector || 'Higher Education'}
+              </span>
+            </div>
+            <div>
+              <span className="font-label-caps text-[9px] text-[#606D7A] block">RISK APPETITE</span>
+              <span className="text-[#FF3B30] font-bold">
+                {profiles.find((p) => p.profile_id === profileA)?.risk_appetite || 'Low'}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Challenge Demonstration Banner */}
-        <div className="p-4.5 rounded-2xl bg-gradient-to-r from-blue-950/40 via-cyan-950/40 to-slate-950/60 border border-cyan-500/25 flex items-center justify-between flex-wrap gap-3 shadow-sm">
-          <div className="text-xs text-slate-200 leading-relaxed">
-            <strong className="font-mono text-cyan-400 font-extrabold">CORE CHALLENGE PROOF: </strong>
-            <span>Same threat dataset + distinct organisational context = completely different Top 5 priorities.</span>
-          </div>
-          <span className="text-[11px] font-mono font-bold px-3 py-1 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-            0% Overlap Validated
-          </span>
-        </div>
-
-        {/* Profile Selectors Dual Card */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          {/* Profile A Selector */}
-          <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 shadow-inner">
-            <label className="text-[10px] font-mono uppercase text-slate-400 block font-bold">
-              Organisation A
-            </label>
-            <select
-              value={profileA}
-              onChange={(e) => setProfileA(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white font-bold text-sm focus:outline-none focus:border-cyan-500 cursor-pointer shadow-xs"
-            >
-              {profiles.map((p) => (
-                <option key={p.profile_id} value={p.profile_id}>
-                  {p.name} ({p.profile_id} - {p.sector})
-                </option>
-              ))}
-            </select>
+        {/* Profile B Card */}
+        <div className="panel-depth p-6 border border-[#1E2530] hover:border-[#00E5FF]/60 transition-colors relative group">
+          <div className="flex justify-between items-start mb-6">
+            <div>
+              <span className="font-label-caps text-[10px] text-[#606D7A] uppercase tracking-widest block mb-1">
+                PROFILE CONTEXT B
+              </span>
+              <select
+                value={profileB}
+                onChange={(e) => setProfileB(e.target.value)}
+                className="bg-[#0c0e12] border border-[#3b494c] text-[#F5F7FA] font-bold text-sm px-3 py-2 cursor-pointer focus:border-[#00E5FF] outline-none"
+              >
+                {profiles.map((p) => (
+                  <option key={p.profile_id} value={p.profile_id}>
+                    {p.name} ({p.profile_id})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <span className="text-xs font-mono px-2 py-0.5 bg-[#0c0e12] text-[#00daf3] border border-[#3b494c]">
+              {profileB}
+            </span>
           </div>
 
-          {/* Profile B Selector */}
-          <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 shadow-inner">
-            <label className="text-[10px] font-mono uppercase text-slate-400 block font-bold">
-              Organisation B
-            </label>
-            <select
-              value={profileB}
-              onChange={(e) => setProfileB(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white font-bold text-sm focus:outline-none focus:border-blue-500 cursor-pointer shadow-xs"
-            >
-              {profiles.map((p) => (
-                <option key={p.profile_id} value={p.profile_id}>
-                  {p.name} ({p.profile_id} - {p.sector})
-                </option>
-              ))}
-            </select>
+          <div className="grid grid-cols-2 gap-4 text-xs font-mono pt-2 border-t border-[#1E2530]">
+            <div>
+              <span className="font-label-caps text-[9px] text-[#606D7A] block">SECTOR</span>
+              <span className="text-[#F5F7FA] font-bold">
+                {profiles.find((p) => p.profile_id === profileB)?.sector || 'Technology Startup'}
+              </span>
+            </div>
+            <div>
+              <span className="font-label-caps text-[9px] text-[#606D7A] block">RISK APPETITE</span>
+              <span className="text-[#00daf3] font-bold">
+                {profiles.find((p) => p.profile_id === profileB)?.risk_appetite || 'High'}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {error && <ErrorBanner message={error} onRetry={() => fetchComparison(profileA, profileB)} />}
 
@@ -129,131 +154,127 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
 
       {!isLoading && comparison && (
         <>
-          {/* Comparison Summary Metric Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-5 rounded-3xl bg-slate-900/80 border border-slate-800 text-center font-mono shadow-lg">
-              <span className="text-slate-400 text-xs uppercase block font-semibold">Common Top 5 Actions</span>
-              <span className="text-3xl font-extrabold text-cyan-400">
+          {/* Comparison Metric Overview */}
+          <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-6 bg-[#0c0e12] border border-[#1E2530] text-center font-mono">
+              <span className="text-[#606D7A] text-[10px] font-label-caps uppercase tracking-widest block">
+                Common Top 5 Actions
+              </span>
+              <span className="text-3xl font-extrabold text-[#00E5FF] my-1 block">
                 {comparison.common_cves.length}
               </span>
-              <span className="text-[11px] text-slate-400 block mt-1">
+              <span className="text-[11px] text-[#bac9cc] block font-sans">
                 {comparison.common_cves.length === 0 ? '0% Overlap (Distinct Decisions)' : 'Shared CVEs'}
               </span>
             </div>
 
-            <div className="p-5 rounded-3xl bg-slate-900/80 border border-slate-800 text-center font-mono shadow-lg">
-              <span className="text-slate-400 text-xs uppercase block font-semibold">Unique to {comparison.profile_a.name}</span>
-              <span className="text-3xl font-extrabold text-white">
+            <div className="p-6 bg-[#0c0e12] border border-[#1E2530] text-center font-mono">
+              <span className="text-[#606D7A] text-[10px] font-label-caps uppercase tracking-widest block truncate">
+                Unique to {comparison.profile_a.name}
+              </span>
+              <span className="text-3xl font-extrabold text-[#F5F7FA] my-1 block">
                 {comparison.unique_a_cves.length}
               </span>
-              <span className="text-[11px] text-slate-400 block mt-1">Tailored to Bank Assets</span>
+              <span className="text-[11px] text-[#bac9cc] block font-sans">Customized to Perimeter A</span>
             </div>
 
-            <div className="p-5 rounded-3xl bg-slate-900/80 border border-slate-800 text-center font-mono shadow-lg">
-              <span className="text-slate-400 text-xs uppercase block font-semibold">Unique to {comparison.profile_b.name}</span>
-              <span className="text-3xl font-extrabold text-white">
+            <div className="p-6 bg-[#0c0e12] border border-[#1E2530] text-center font-mono">
+              <span className="text-[#606D7A] text-[10px] font-label-caps uppercase tracking-widest block truncate">
+                Unique to {comparison.profile_b.name}
+              </span>
+              <span className="text-3xl font-extrabold text-[#F5F7FA] my-1 block">
                 {comparison.unique_b_cves.length}
               </span>
-              <span className="text-[11px] text-slate-400 block mt-1">Tailored to Startup Assets</span>
+              <span className="text-[11px] text-[#bac9cc] block font-sans">Customized to Perimeter B</span>
             </div>
-          </div>
+          </section>
 
-          {/* Side-by-Side Top 5 Lists */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Top 5 A */}
-            <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-6 sm:p-7 space-y-4 shadow-xl">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3.5">
-                <div>
-                  <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider font-bold">
-                    Organisation A Top 5 List
-                  </span>
-                  <h3 className="text-lg font-bold text-white">{comparison.profile_a.name}</h3>
-                </div>
-                <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
-                  {comparison.profile_a.id}
-                </span>
-              </div>
+          {/* Priority Shift Analysis */}
+          <section className="space-y-6">
+            <h3 className="font-headline-md text-xl font-bold text-[#F5F7FA] border-b border-[#1E2530] pb-3 flex items-center justify-between">
+              <span>Priority Shift Analysis</span>
+              <span className="text-xs font-mono text-[#00E5FF]">SIDE-BY-SIDE AUDIT</span>
+            </h3>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Ranking A */}
               <div className="space-y-3">
+                <div className="font-label-caps text-[11px] text-[#606D7A] tracking-wider uppercase font-bold">
+                  {comparison.profile_a.name} RANKING
+                </div>
                 {comparison.top5_a.map((item) => (
                   <div
                     key={item.cve_id}
-                    className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800/90 space-y-2 text-xs shadow-sm hover:border-slate-700 transition-colors"
+                    className="data-row p-4 flex items-center justify-between bg-[#111318]"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5 font-mono">
-                        <span className="h-6 w-6 rounded-lg bg-slate-800 text-cyan-400 font-bold flex items-center justify-center border border-slate-700">
-                          #{item.rank}
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-sm font-bold text-[#606D7A] w-6">
+                        #{item.rank}
+                      </span>
+                      <div>
+                        <span className="font-mono font-bold text-xs text-[#F5F7FA] block">
+                          {item.cve_id}
                         </span>
-                        <span className="font-bold text-white">{item.cve_id}</span>
+                        <span className="font-label-caps text-[10px] text-[#FF3B30] flex items-center gap-1.5 pt-0.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#FF3B30] inline-block" />
+                          {item.technology.product}
+                        </span>
                       </div>
-                      <span className="font-mono text-cyan-400 font-extrabold">{item.score.toFixed(1)} pts</span>
                     </div>
-                    <p className="text-slate-200 font-semibold truncate">{item.title}</p>
-                    <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
-                      <span>{item.technology.product}</span>
-                      <span>•</span>
-                      <span className="uppercase text-slate-300 font-bold">{item.exposure}</span>
+                    <div className="text-right font-mono text-xs">
+                      <span className="font-extrabold text-[#00E5FF]">{item.score.toFixed(1)}</span>
+                      <span className="text-[#606D7A] text-[10px]"> pts</span>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
 
-            {/* Top 5 B */}
-            <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-6 sm:p-7 space-y-4 shadow-xl">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3.5">
-                <div>
-                  <span className="text-xs font-mono text-blue-400 uppercase tracking-wider font-bold">
-                    Organisation B Top 5 List
-                  </span>
-                  <h3 className="text-lg font-bold text-white">{comparison.profile_b.name}</h3>
-                </div>
-                <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
-                  {comparison.profile_b.id}
-                </span>
-              </div>
-
+              {/* Ranking B */}
               <div className="space-y-3">
+                <div className="font-label-caps text-[11px] text-[#606D7A] tracking-wider uppercase font-bold">
+                  {comparison.profile_b.name} RANKING
+                </div>
                 {comparison.top5_b.map((item) => (
                   <div
                     key={item.cve_id}
-                    className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800/90 space-y-2 text-xs shadow-sm hover:border-slate-700 transition-colors"
+                    className="data-row p-4 flex items-center justify-between bg-[#111318]"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5 font-mono">
-                        <span className="h-6 w-6 rounded-lg bg-slate-800 text-blue-400 font-bold flex items-center justify-center border border-slate-700">
-                          #{item.rank}
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-sm font-bold text-[#00daf3] w-6">
+                        #{item.rank}
+                      </span>
+                      <div>
+                        <span className="font-mono font-bold text-xs text-[#F5F7FA] block">
+                          {item.cve_id}
                         </span>
-                        <span className="font-bold text-white">{item.cve_id}</span>
+                        <span className="font-label-caps text-[10px] text-[#00daf3] flex items-center gap-1.5 pt-0.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#00daf3] inline-block" />
+                          {item.technology.product}
+                        </span>
                       </div>
-                      <span className="font-mono text-blue-400 font-extrabold">{item.score.toFixed(1)} pts</span>
                     </div>
-                    <p className="text-slate-200 font-semibold truncate">{item.title}</p>
-                    <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
-                      <span>{item.technology.product}</span>
-                      <span>•</span>
-                      <span className="uppercase text-slate-300 font-bold">{item.exposure}</span>
+                    <div className="text-right font-mono text-xs">
+                      <span className="font-extrabold text-[#00daf3]">{item.score.toFixed(1)}</span>
+                      <span className="text-[#606D7A] text-[10px]"> pts</span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Granular Divergence Drivers ("Why did the priorities change?") */}
-          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-6 sm:p-7 space-y-5 shadow-xl">
-            <div className="border-b border-slate-800 pb-3.5">
-              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-cyan-400 font-extrabold">
-                <Sparkles className="h-4 w-4" />
-                <span>WHY DID THE PRIORITIES DIVERGE?</span>
-              </div>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+          {/* Granular Divergence Drivers */}
+          <section className="bg-[#11141B] border border-[#1E2530] p-6 md:p-8 space-y-6">
+            <div className="border-b border-[#1E2530] pb-4">
+              <h3 className="font-headline-md text-lg font-bold text-[#F5F7FA]">
+                Why Did the Priorities Diverge?
+              </h3>
+              <p className="text-xs text-[#606D7A] mt-1 font-mono">
                 Deterministic driver analysis explaining why specific vulnerabilities rank in one organisation while being ranked lower or excluded in the other.
               </p>
             </div>
 
-            <div className="space-y-3.5">
+            <div className="space-y-3">
               {comparison.differences.map((diff) => {
                 const rankA = diff.rank_a;
                 const rankB = diff.rank_b;
@@ -261,18 +282,18 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
                 return (
                   <div
                     key={diff.cve_id}
-                    className="p-4.5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-slate-750 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs shadow-sm"
+                    className="p-4 bg-[#0c0e12] border border-[#1E2530] flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs"
                   >
                     <div className="space-y-1.5">
-                      <div className="flex items-center gap-2.5">
-                        <span className="font-mono font-bold text-white text-sm">{diff.cve_id}</span>
-                        <span className="text-slate-400 font-medium">({diff.product_name})</span>
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono font-bold text-[#F5F7FA] text-sm">{diff.cve_id}</span>
+                        <span className="text-[#606D7A] font-mono">({diff.product_name})</span>
                       </div>
                       <div className="flex flex-wrap gap-2 pt-1">
                         {diff.drivers.map((drv, i) => (
                           <span
                             key={i}
-                            className="px-2.5 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 border border-cyan-500/25 font-mono text-[10px] font-semibold"
+                            className="px-2 py-0.5 bg-[#191c20] text-[#00E5FF] border border-[#3b494c] font-mono text-[10px]"
                           >
                             {drv}
                           </span>
@@ -281,30 +302,30 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
                     </div>
 
                     <div className="flex items-center gap-4 shrink-0 font-mono text-xs">
-                      <div className="text-center min-w-[80px]">
-                        <span className="text-[10px] text-slate-500 block uppercase">Rank in Org A</span>
-                        <span className="font-extrabold text-cyan-400 text-sm">
+                      <div className="text-center min-w-[90px]">
+                        <span className="text-[9px] font-label-caps text-[#606D7A] block uppercase">Org A Rank</span>
+                        <span className="font-bold text-[#00E5FF] text-sm">
                           {rankA ? `#${rankA}` : 'Excluded'}
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-center">
+                      <div className="flex items-center justify-center text-[#606D7A]">
                         {rankA && rankB ? (
                           rankA < rankB ? (
-                            <TrendingDown className="h-4 w-4 text-amber-400" />
+                            <TrendingDown className="h-4 w-4 text-[#FF9500]" />
                           ) : rankA > rankB ? (
-                            <TrendingUp className="h-4 w-4 text-emerald-400" />
+                            <TrendingUp className="h-4 w-4 text-[#00E5FF]" />
                           ) : (
-                            <Minus className="h-4 w-4 text-slate-500" />
+                            <Minus className="h-4 w-4 text-[#606D7A]" />
                           )
                         ) : (
-                          <ArrowRight className="h-4 w-4 text-slate-600" />
+                          <ArrowRight className="h-4 w-4 text-[#3b494c]" />
                         )}
                       </div>
 
-                      <div className="text-center min-w-[80px]">
-                        <span className="text-[10px] text-slate-500 block uppercase">Rank in Org B</span>
-                        <span className="font-extrabold text-blue-400 text-sm">
+                      <div className="text-center min-w-[90px]">
+                        <span className="text-[9px] font-label-caps text-[#606D7A] block uppercase">Org B Rank</span>
+                        <span className="font-bold text-[#00daf3] text-sm">
                           {rankB ? `#${rankB}` : 'Excluded'}
                         </span>
                       </div>
@@ -313,7 +334,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ profiles }) => {
                 );
               })}
             </div>
-          </div>
+          </section>
         </>
       )}
     </motion.div>

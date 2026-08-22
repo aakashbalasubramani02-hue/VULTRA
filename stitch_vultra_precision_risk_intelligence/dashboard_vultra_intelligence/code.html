@@ -1,0 +1,361 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>VULTRA Intelligence Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#006875",
+                      "text-muted": "#606D7A",
+                      "outline": "#849396",
+                      "tertiary-fixed": "#ffdf96",
+                      "risk-urgent": "#FF3B30",
+                      "surface-container-low": "#191c20",
+                      "outline-variant": "#3b494c",
+                      "surface-tint": "#00daf3",
+                      "on-primary-fixed": "#001f24",
+                      "error": "#ffb4ab",
+                      "background": "#111318",
+                      "surface-dim": "#111318",
+                      "surface-container-high": "#282a2f",
+                      "on-secondary-container": "#b6b8c2",
+                      "surface-container-highest": "#333539",
+                      "on-tertiary-fixed": "#251a00",
+                      "secondary": "#c4c6d0",
+                      "surface-container": "#1d2024",
+                      "on-background": "#e2e2e8",
+                      "secondary-fixed-dim": "#c4c6d0",
+                      "tertiary-fixed-dim": "#f3bf26",
+                      "secondary-container": "#464951",
+                      "text-primary": "#F5F7FA",
+                      "on-primary": "#00363d",
+                      "inverse-on-surface": "#2e3035",
+                      "risk-medium": "#FFCC00",
+                      "surface-container-lowest": "#0c0e12",
+                      "secondary-fixed": "#e0e2ec",
+                      "on-error": "#690005",
+                      "primary-fixed-dim": "#00daf3",
+                      "risk-low": "#2C3139",
+                      "error-container": "#93000a",
+                      "on-tertiary": "#3e2e00",
+                      "primary-fixed": "#9cf0ff",
+                      "tertiary": "#ffeac0",
+                      "on-secondary-fixed-variant": "#44474f",
+                      "on-secondary-fixed": "#191c23",
+                      "primary": "#c3f5ff",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-container": "#fec931",
+                      "surface-variant": "#333539",
+                      "surface-bright": "#37393e",
+                      "on-tertiary-fixed-variant": "#594400",
+                      "on-surface-variant": "#bac9cc",
+                      "primary-container": "#00e5ff",
+                      "on-secondary": "#2d3038",
+                      "on-primary-fixed-variant": "#004f58",
+                      "on-primary-container": "#00626e",
+                      "on-tertiary-container": "#6f5500",
+                      "risk-high": "#FF9500",
+                      "inverse-surface": "#e2e2e8",
+                      "on-surface": "#e2e2e8",
+                      "surface": "#111318"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "40px",
+                      "unit": "4px",
+                      "gutter": "24px",
+                      "section-gap": "80px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Geist"
+                      ],
+                      "headline-lg-mobile": [
+                              "Geist"
+                      ],
+                      "headline-md": [
+                              "Geist"
+                      ],
+                      "body-lg": [
+                              "Geist"
+                      ],
+                      "body-md": [
+                              "Geist"
+                      ],
+                      "label-caps": [
+                              "Geist"
+                      ],
+                      "headline-lg": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "11px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.03em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { font-family: 'Geist', sans-serif; }
+        .fade-slide-up {
+            animation: fadeSlideUp 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        @keyframes fadeSlideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+      </style>
+</head>
+<body class="bg-background text-text-primary antialiased flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<nav class="bg-background/80 backdrop-blur-md dark:bg-background/80 fixed top-0 w-full z-50 border-b border-outline-variant dark:border-outline-variant flex justify-between items-center px-margin py-4 w-full">
+<div class="flex items-center gap-gutter">
+<span class="font-display-lg text-display-lg tracking-tighter text-primary dark:text-primary-container">VULTRA</span>
+<div class="hidden md:flex gap-gutter font-body-md text-body-md">
+<a class="text-text-muted dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">How it works</a>
+<a class="text-primary dark:text-primary-fixed font-bold border-b border-primary opacity-80 transition-opacity" href="#">Intelligence</a>
+<a class="text-text-muted dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">Methodology</a>
+</div>
+</div>
+<button class="bg-primary-container text-background px-4 py-2 font-label-caps text-label-caps tracking-widest hover:bg-primary transition-colors">Launch Analysis</button>
+</nav>
+<!-- Main Content Layout -->
+<div class="flex flex-1 pt-[100px]"> <!-- pt to account for fixed nav -->
+<!-- Sidebar Navigation (Structural) -->
+<aside class="hidden md:block w-64 border-r border-outline-variant px-margin py-8">
+<nav class="flex flex-col gap-6">
+<a class="font-headline-md text-headline-md text-primary flex items-center gap-2" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                    Dashboard
+                </a>
+<a class="font-headline-md text-headline-md text-text-muted hover:text-primary transition-colors flex items-center gap-2" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                    Analysis
+                </a>
+<a class="font-headline-md text-headline-md text-text-muted hover:text-primary transition-colors flex items-center gap-2" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+                    Comparison
+                </a>
+<a class="font-headline-md text-headline-md text-text-muted hover:text-primary transition-colors flex items-center gap-2" href="#">
+<span class="material-symbols-outlined">science</span>
+                    Methodology
+                </a>
+</nav>
+</aside>
+<!-- Canvas -->
+<main class="flex-1 px-margin py-8 max-w-7xl mx-auto w-full">
+<!-- Header Section -->
+<header class="mb-section-gap fade-slide-up">
+<div class="flex flex-col gap-2 mb-6">
+<h1 class="font-display-lg text-display-lg text-primary tracking-tighter">Security Priorities</h1>
+<h2 class="font-headline-lg text-headline-lg text-text-muted">5 vulnerabilities deserve your attention.</h2>
+</div>
+<!-- Compact Context Bar -->
+<div class="flex items-center gap-4 font-label-caps text-label-caps text-on-surface-variant tracking-widest uppercase">
+<span>Northstar University</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span>Internet-facing</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span>Critical service</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span>4 technologies</span>
+</div>
+</header>
+<!-- Intelligence Feed -->
+<div class="flex flex-col gap-8">
+<!-- #1 Priority Hero -->
+<section class="fade-slide-up delay-100 flex flex-col gap-6 border border-risk-urgent bg-[#11141B] p-8 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-2 h-full bg-risk-urgent"></div>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+<div class="flex items-start gap-4">
+<span class="font-display-lg text-display-lg text-risk-urgent/20 leading-none">01</span>
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-risk-urgent"></span>
+<span class="font-label-caps text-label-caps text-risk-urgent tracking-widest">URGENT</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-text-primary">Apache vulnerability could expose your student portal</h3>
+</div>
+</div>
+<div class="flex gap-8 items-end text-right">
+<div>
+<span class="font-label-caps text-label-caps text-text-muted block mb-1">SCORE</span>
+<span class="font-display-lg text-display-lg text-risk-urgent leading-none">84<span class="text-headline-md text-text-muted">/100</span></span>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-text-muted block mb-1">CONFIDENCE</span>
+<span class="font-headline-md text-headline-md text-text-primary">HIGH</span>
+</div>
+</div>
+</div>
+<div class="border-t border-outline-variant pt-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+<div class="flex flex-wrap gap-4 font-body-md text-body-md text-text-muted">
+<span class="flex items-center gap-1"><span class="text-risk-urgent">+40</span> KEV</span>
+<span class="flex items-center gap-1"><span class="text-risk-urgent">+20</span> Internet Facing</span>
+<span class="flex items-center gap-1"><span class="text-risk-urgent">+10</span> Exploit Available</span>
+<span class="flex items-center gap-1 text-outline">Apache 2.4</span>
+</div>
+<button class="border border-primary-container text-primary-container px-6 py-2 font-label-caps text-label-caps tracking-widest hover:bg-primary-container hover:text-background transition-colors">Understand why</button>
+</div>
+</section>
+<!-- Priorities #2-5 List -->
+<section class="fade-slide-up delay-200 flex flex-col">
+<!-- Row 2 -->
+<div class="flex flex-col md:flex-row items-center justify-between py-6 border-b border-outline-variant hover:bg-[#11141B] transition-colors relative group pl-4">
+<div class="absolute left-0 top-0 h-full w-0.5 bg-transparent group-hover:bg-primary-container transition-colors"></div>
+<div class="flex items-center gap-6 w-full md:w-auto mb-4 md:mb-0">
+<span class="font-headline-md text-headline-md text-text-muted w-8">02</span>
+<div class="flex items-center justify-center w-24">
+<span class="border border-risk-high px-2 py-1 flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-risk-high rounded-full"></span>
+<span class="font-label-caps text-label-caps text-text-primary">HIGH</span>
+</span>
+</div>
+<span class="font-body-lg text-body-lg text-text-primary">MySQL Authentication Bypass</span>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<span class="font-body-md text-body-md text-text-muted hidden md:block">Internal DB • +15 Exploit</span>
+<span class="font-headline-md text-headline-md text-risk-high">72/100</span>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="flex flex-col md:flex-row items-center justify-between py-6 border-b border-outline-variant hover:bg-[#11141B] transition-colors relative group pl-4">
+<div class="absolute left-0 top-0 h-full w-0.5 bg-transparent group-hover:bg-primary-container transition-colors"></div>
+<div class="flex items-center gap-6 w-full md:w-auto mb-4 md:mb-0">
+<span class="font-headline-md text-headline-md text-text-muted w-8">03</span>
+<div class="flex items-center justify-center w-24">
+<span class="border border-risk-high px-2 py-1 flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-risk-high rounded-full"></span>
+<span class="font-label-caps text-label-caps text-text-primary">HIGH</span>
+</span>
+</div>
+<span class="font-body-lg text-body-lg text-text-primary">Outdated Nginx version</span>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<span class="font-body-md text-body-md text-text-muted hidden md:block">Edge Node • +10 Public</span>
+<span class="font-headline-md text-headline-md text-risk-high">68/100</span>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="flex flex-col md:flex-row items-center justify-between py-6 border-b border-outline-variant hover:bg-[#11141B] transition-colors relative group pl-4">
+<div class="absolute left-0 top-0 h-full w-0.5 bg-transparent group-hover:bg-primary-container transition-colors"></div>
+<div class="flex items-center gap-6 w-full md:w-auto mb-4 md:mb-0">
+<span class="font-headline-md text-headline-md text-text-muted w-8">04</span>
+<div class="flex items-center justify-center w-24">
+<span class="border border-risk-medium px-2 py-1 flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-risk-medium rounded-full"></span>
+<span class="font-label-caps text-label-caps text-text-primary">MED</span>
+</span>
+</div>
+<span class="font-body-lg text-body-lg text-text-primary">Open SSH Port</span>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<span class="font-body-md text-body-md text-text-muted hidden md:block">Development • Low value target</span>
+<span class="font-headline-md text-headline-md text-risk-medium">45/100</span>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="flex flex-col md:flex-row items-center justify-between py-6 border-b border-outline-variant hover:bg-[#11141B] transition-colors relative group pl-4">
+<div class="absolute left-0 top-0 h-full w-0.5 bg-transparent group-hover:bg-primary-container transition-colors"></div>
+<div class="flex items-center gap-6 w-full md:w-auto mb-4 md:mb-0">
+<span class="font-headline-md text-headline-md text-text-muted w-8">05</span>
+<div class="flex items-center justify-center w-24">
+<span class="border border-risk-low px-2 py-1 flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-risk-low rounded-full"></span>
+<span class="font-label-caps text-label-caps text-text-primary">LOW</span>
+</span>
+</div>
+<span class="font-body-lg text-body-lg text-text-primary">Information Disclosure in Headers</span>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<span class="font-body-md text-body-md text-text-muted hidden md:block">Minor Config • No Exploit</span>
+<span class="font-headline-md text-headline-md text-text-muted">22/100</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-background dark:bg-surface border-t border-outline-variant dark:border-outline-variant w-full py-section-gap flex flex-col md:flex-row justify-between items-center px-margin w-full max-w-7xl mx-auto mt-auto">
+<span class="font-headline-md text-headline-md text-on-surface dark:text-on-background mb-4 md:mb-0">VULTRA</span>
+<div class="flex gap-gutter font-label-caps text-label-caps text-text-muted dark:text-on-surface-variant">
+<a class="hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Terms</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">API Status</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Security Documentation</a>
+</div>
+<span class="font-label-caps text-label-caps text-text-muted dark:text-on-surface-variant mt-4 md:mt-0">© 2024 VULTRA CYBER INTELLIGENCE. ALL RIGHTS RESERVED.</span>
+</footer>
+</body></html>

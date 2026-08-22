@@ -37,25 +37,25 @@ export const OrganizationSelector: React.FC<OrganizationSelectorProps> = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         disabled={isLoading || profiles.length === 0}
-        className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-slate-900/90 hover:bg-slate-850 border border-slate-700/80 hover:border-cyan-500/50 text-white transition-all shadow-xl shadow-black/40 group cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-400"
+        className="flex items-center gap-3.5 px-4 py-2.5 bg-[#11141B] hover:bg-[#191c20] border border-[#3b494c] hover:border-[#00E5FF] text-[#F5F7FA] transition-all group cursor-pointer focus:border-[#00E5FF]"
       >
-        <div className="h-9 w-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform duration-200 shadow-inner">
+        <div className="w-8 h-8 bg-[#191c20] border border-[#3b494c] flex items-center justify-center text-[#00E5FF] group-hover:border-[#00E5FF] transition-colors">
           <Building2 className="h-4 w-4" />
         </div>
         <div className="text-left">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-            Active Organisation
+          <div className="text-[10px] font-label-caps uppercase tracking-widest text-[#606D7A]">
+            ACTIVE ORGANISATION
           </div>
-          <div className="text-sm font-bold text-white flex items-center gap-2">
+          <div className="text-sm font-bold text-[#F5F7FA] flex items-center gap-2">
             {selectedProfile ? selectedProfile.name : 'Loading profile...'}
-            <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-800 text-cyan-300 font-mono border border-slate-700">
+            <span className="text-[10px] px-1.5 py-0.5 bg-[#0c0e12] text-[#00E5FF] font-mono border border-[#3b494c]">
               {selectedProfile ? selectedProfile.profile_id : ''}
             </span>
           </div>
         </div>
         <ChevronDown
-          className={`h-4 w-4 text-slate-400 group-hover:text-cyan-400 transition-transform duration-200 ml-1.5 ${
-            isOpen ? 'rotate-180 text-cyan-400' : ''
+          className={`h-4 w-4 text-[#606D7A] group-hover:text-[#00E5FF] transition-transform duration-200 ml-1.5 ${
+            isOpen ? 'rotate-180 text-[#00E5FF]' : ''
           }`}
         />
       </button>
@@ -63,22 +63,22 @@ export const OrganizationSelector: React.FC<OrganizationSelectorProps> = ({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.98 }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 mt-2 w-88 rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl shadow-black/90 z-50 overflow-hidden backdrop-blur-2xl"
+            className="absolute left-0 mt-1 w-96 bg-[#0c0e12] border border-[#3b494c] shadow-2xl z-50 overflow-hidden"
           >
-            <div className="p-3.5 border-b border-slate-800 bg-slate-950/70">
-              <p className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">
-                Select Organisation Context
+            <div className="p-4 border-b border-[#1E2530] bg-[#11141B]">
+              <p className="text-[11px] font-bold text-[#F5F7FA] font-label-caps uppercase tracking-widest">
+                Select Telemetry Context
               </p>
-              <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-                Triage rankings adapt dynamically to each organisation's unique technology assets and perimeter exposure.
+              <p className="text-[11px] text-[#bac9cc] mt-1 leading-relaxed">
+                Triage rankings dynamically reorganize based on each organisation's specific attack perimeter and technology inventory.
               </p>
             </div>
 
-            <div className="py-1.5 max-h-80 overflow-y-auto divide-y divide-slate-800/50">
+            <div className="max-h-80 overflow-y-auto divide-y divide-[#1E2530]">
               {profiles.map((profile) => {
                 const isSelected = profile.profile_id === selectedOrgId;
                 return (
@@ -89,21 +89,21 @@ export const OrganizationSelector: React.FC<OrganizationSelectorProps> = ({
                       onSelectOrg(profile.profile_id);
                       setIsOpen(false);
                     }}
-                    className={`w-full px-4 py-3.5 text-left flex items-start gap-3.5 hover:bg-slate-800/70 transition-colors cursor-pointer ${
-                      isSelected ? 'bg-cyan-500/10' : ''
+                    className={`w-full px-4 py-3.5 text-left flex items-start gap-3.5 hover:bg-[#11141B] transition-colors cursor-pointer border-l-2 ${
+                      isSelected ? 'bg-[#11141B] border-l-[#00E5FF]' : 'border-l-transparent'
                     }`}
                   >
                     <div
-                      className={`mt-0.5 h-7 w-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                      className={`mt-0.5 w-6 h-6 flex items-center justify-center shrink-0 transition-colors ${
                         isSelected
-                          ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20'
-                          : 'bg-slate-800 text-slate-400 border border-slate-700'
+                          ? 'bg-[#00E5FF] text-[#0c0e12] font-bold'
+                          : 'bg-[#191c20] text-[#606D7A] border border-[#3b494c]'
                       }`}
                     >
                       {isSelected ? (
-                        <Check className="h-4 w-4 stroke-[3]" />
+                        <Check className="h-3.5 w-3.5 stroke-[3]" />
                       ) : (
-                        <Building2 className="h-3.5 w-3.5" />
+                        <Building2 className="h-3 w-3" />
                       )}
                     </div>
 
@@ -111,28 +111,28 @@ export const OrganizationSelector: React.FC<OrganizationSelectorProps> = ({
                       <div className="flex items-center justify-between gap-2">
                         <span
                           className={`text-sm font-bold truncate ${
-                            isSelected ? 'text-cyan-300' : 'text-slate-200'
+                            isSelected ? 'text-[#00E5FF]' : 'text-[#F5F7FA]'
                           }`}
                         >
                           {profile.name}
                         </span>
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 bg-[#0c0e12] text-[#bac9cc] border border-[#3b494c]">
                           {profile.profile_id}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-400">
+                      <div className="flex items-center gap-2 mt-1 text-[11px] text-[#bac9cc]">
                         <span>{profile.sector}</span>
-                        <span>•</span>
-                        <span className="text-cyan-400 font-semibold flex items-center gap-1">
+                        <span className="text-[#3b494c]">•</span>
+                        <span className="text-[#00daf3] font-semibold flex items-center gap-1">
                           <Cpu className="h-3 w-3" />
                           {profile.technology_count} technologies
                         </span>
                       </div>
 
-                      <div className="mt-1 flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
-                        <ShieldAlert className="h-3 w-3 text-slate-500" />
-                        <span>Risk Appetite: <strong className="text-slate-300">{profile.risk_appetite}</strong></span>
+                      <div className="mt-1 flex items-center gap-1.5 text-[10px] text-[#606D7A] font-mono">
+                        <ShieldAlert className="h-3 w-3 text-[#606D7A]" />
+                        <span>Risk Appetite: <strong className="text-[#bac9cc]">{profile.risk_appetite}</strong></span>
                       </div>
                     </div>
                   </button>

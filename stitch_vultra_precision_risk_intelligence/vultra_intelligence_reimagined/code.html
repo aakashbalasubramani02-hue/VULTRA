@@ -1,0 +1,362 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>VULTRA - Cyber Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#006875",
+                      "text-muted": "#606D7A",
+                      "outline": "#849396",
+                      "tertiary-fixed": "#ffdf96",
+                      "risk-urgent": "#FF3B30",
+                      "surface-container-low": "#191c20",
+                      "outline-variant": "#3b494c",
+                      "surface-tint": "#00daf3",
+                      "on-primary-fixed": "#001f24",
+                      "error": "#ffb4ab",
+                      "background": "#111318",
+                      "surface-dim": "#111318",
+                      "surface-container-high": "#282a2f",
+                      "on-secondary-container": "#b6b8c2",
+                      "surface-container-highest": "#333539",
+                      "on-tertiary-fixed": "#251a00",
+                      "secondary": "#c4c6d0",
+                      "surface-container": "#1d2024",
+                      "on-background": "#e2e2e8",
+                      "secondary-fixed-dim": "#c4c6d0",
+                      "tertiary-fixed-dim": "#f3bf26",
+                      "secondary-container": "#464951",
+                      "text-primary": "#F5F7FA",
+                      "on-primary": "#00363d",
+                      "inverse-on-surface": "#2e3035",
+                      "risk-medium": "#FFCC00",
+                      "surface-container-lowest": "#0c0e12",
+                      "secondary-fixed": "#e0e2ec",
+                      "on-error": "#690005",
+                      "primary-fixed-dim": "#00daf3",
+                      "risk-low": "#2C3139",
+                      "error-container": "#93000a",
+                      "on-tertiary": "#3e2e00",
+                      "primary-fixed": "#9cf0ff",
+                      "tertiary": "#ffeac0",
+                      "on-secondary-fixed-variant": "#44474f",
+                      "on-secondary-fixed": "#191c23",
+                      "primary": "#c3f5ff",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-container": "#fec931",
+                      "surface-variant": "#333539",
+                      "surface-bright": "#37393e",
+                      "on-tertiary-fixed-variant": "#594400",
+                      "on-surface-variant": "#bac9cc",
+                      "primary-container": "#00e5ff",
+                      "on-secondary": "#2d3038",
+                      "on-primary-fixed-variant": "#004f58",
+                      "on-primary-container": "#00626e",
+                      "on-tertiary-container": "#6f5500",
+                      "risk-high": "#FF9500",
+                      "inverse-surface": "#e2e2e8",
+                      "on-surface": "#e2e2e8",
+                      "surface": "#111318"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "40px",
+                      "unit": "4px",
+                      "gutter": "24px",
+                      "section-gap": "80px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Geist"
+                      ],
+                      "headline-lg-mobile": [
+                              "Geist"
+                      ],
+                      "headline-md": [
+                              "Geist"
+                      ],
+                      "body-lg": [
+                              "Geist"
+                      ],
+                      "body-md": [
+                              "Geist"
+                      ],
+                      "label-caps": [
+                              "Geist"
+                      ],
+                      "headline-lg": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "11px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.03em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+        
+        body {
+            background-color: #111318;
+            color: #F5F7FA;
+            font-family: 'Geist', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cyber-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(59, 73, 76, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(59, 73, 76, 0.1) 1px, transparent 1px);
+        }
+
+        .glowing-border {
+            position: relative;
+        }
+        .glowing-border::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px; right: -1px; bottom: -1px;
+            background: linear-gradient(45deg, #00e5ff, transparent, #00e5ff);
+            z-index: -1;
+            border-radius: inherit;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="bg-background text-text-primary antialiased selection:bg-primary-container selection:text-background">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md dark:bg-background/80 border-b border-outline-variant dark:border-outline-variant flex justify-between items-center px-margin py-4 transition-all duration-300">
+<div class="flex items-center gap-8">
+<span class="font-display-lg text-display-lg tracking-tighter text-primary dark:text-primary-container leading-none cursor-pointer">VULTRA</span>
+<div class="hidden md:flex gap-6 items-center pt-2">
+<a class="font-body-md text-body-md text-text-muted dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">How it works</a>
+<a class="font-body-md text-body-md text-primary dark:text-primary-fixed font-bold border-b border-primary hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 pb-1" href="#">Intelligence</a>
+<a class="font-body-md text-body-md text-text-muted dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">Methodology</a>
+</div>
+</div>
+<button class="bg-primary-container text-background font-body-md text-body-md px-6 py-2 hover:opacity-90 transition-opacity duration-200 font-semibold tracking-wide">
+            Launch Analysis
+        </button>
+</nav>
+<!-- Main Content -->
+<main class="pt-32 px-margin max-w-[1600px] mx-auto pb-section-gap">
+<!-- Hero Section -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-gutter min-h-[716px] items-center mb-section-gap fade-up">
+<div class="md:col-span-5 flex flex-col gap-8 z-10">
+<h1 class="font-display-lg text-display-lg leading-[1.1] text-text-primary">
+                    Stop chasing every vulnerability.<br>
+<span class="text-primary-container">Fix what matters.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-text-muted max-w-lg border-l-2 border-outline-variant pl-4 py-1">
+                    VULTRA transforms public vulnerability intelligence into a focused, explainable action list for your organisation.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 mt-4">
+<button class="bg-primary-container text-background font-headline-md text-headline-md px-8 py-4 hover:opacity-90 transition-opacity whitespace-nowrap">
+                        Analyse Your Organisation
+                    </button>
+<button class="border border-outline-variant text-text-primary font-headline-md text-headline-md px-8 py-4 hover:border-primary-container hover:text-primary-container transition-colors whitespace-nowrap">
+                        Explore Intelligence
+                    </button>
+</div>
+</div>
+<div class="md:col-span-7 h-full min-h-[500px] relative mt-12 md:mt-0 cyber-grid border border-outline-variant flex items-center justify-center bg-surface-container-low/50">
+<!-- Placeholder for Data Flow Visual -->
+<div class="absolute inset-0 w-full h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start opacity-70">
+<div class="font-label-caps text-label-caps text-text-muted tracking-widest">PUBLIC SIGNALS [CVE, KEV, EPSS]</div>
+<span class="material-symbols-outlined text-outline">dns</span>
+</div>
+<div class="w-full flex justify-center items-center h-full relative">
+<img class="object-cover w-full h-full opacity-60 mix-blend-screen absolute inset-0" data-alt="A highly stylized, minimalist wireframe UI representing a cyber intelligence dashboard. Deep charcoal background (#111318) with sharp electric cyan (#00E5FF) and warning red (#FF3B30) accents. The aesthetic is 'technical editorial' – flat, clean lines, dense typography, zero rounded corners. A glowing data stream connects disparate data nodes into a central processing hub." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC97GsX0qqhPjLI9Wg9ErcsTOuSLC4npjiiuS5q-0DrfIaQpAx3wTkeele5Uvv9GIGUUfvx3Uv6IaZdMkIl99RCooJzlWRTuSGPW-AjegxUsJ4muqH7X9ebR2mVwLpZshUeVebvxYjWrV3WCMaUzQ1aKFY68iebr7xo620n08CEYFpgc3n74ZzAzN31zQZx-75mbZmGVatd4ufw5i42mRT8CwpNvYZrANRtvDZ_mdlqxTaa0QrsjZFH">
+<div class="z-10 bg-background border border-primary-container p-6 flex flex-col gap-4 glowing-border w-64 shadow-[0_0_30px_rgba(0,229,255,0.1)]">
+<div class="font-label-caps text-label-caps text-primary-container border-b border-outline-variant pb-2">VULTRA ENGINE</div>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md">Matching Context</span>
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+</div>
+<div class="w-full h-1 bg-surface-variant overflow-hidden">
+<div class="w-2/3 h-full bg-primary-container"></div>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-end opacity-70">
+<span class="material-symbols-outlined text-outline">business</span>
+<div class="font-label-caps text-label-caps text-text-muted tracking-widest text-right">ORG CONTEXT [TECH, EXPOSURE]<br>OUTPUT: TOP 5 ACTIONS</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Divider -->
+<div class="w-full h-px bg-outline-variant mb-section-gap"></div>
+<!-- The Problem -->
+<section class="flex flex-col items-center text-center mb-section-gap fade-up" style="animation-delay: 0.2s;">
+<h2 class="font-display-lg text-display-lg mb-8 max-w-4xl text-text-muted">
+                The problem isn't a lack of data.<br>
+<span class="text-text-primary">It's too much of it.</span>
+</h2>
+<div class="grid grid-cols-3 w-full max-w-4xl mt-12 gap-gutter relative">
+<div class="flex flex-col items-center p-8 border-t border-outline-variant">
+<span class="font-display-lg text-display-lg text-risk-urgent mb-2">500+</span>
+<span class="font-label-caps text-label-caps text-text-muted">RAW CVE ALERTS</span>
+</div>
+<div class="flex flex-col items-center justify-center border-t border-outline-variant relative">
+<div class="absolute w-full h-px bg-gradient-to-r from-transparent via-primary-container to-transparent top-0"></div>
+<span class="material-symbols-outlined text-outline text-3xl my-4">filter_alt</span>
+<span class="font-label-caps text-label-caps text-text-muted">NOISE REDUCTION</span>
+</div>
+<div class="flex flex-col items-center p-8 border-t border-primary-container bg-surface-container-low">
+<span class="font-display-lg text-display-lg text-primary-container mb-2">5</span>
+<span class="font-label-caps text-label-caps text-text-primary">CRITICAL DECISIONS</span>
+</div>
+</div>
+</section>
+<!-- How VULTRA Thinks -->
+<section class="mb-section-gap">
+<div class="font-label-caps text-label-caps text-primary-container tracking-widest mb-12 border-b border-outline-variant pb-4">HOW VULTRA THINKS</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-0 border border-outline-variant">
+<!-- Understand -->
+<div class="p-8 border-b md:border-b-0 md:border-r border-outline-variant flex flex-col gap-4 hover:bg-surface-container-low transition-colors group">
+<span class="font-label-caps text-label-caps text-text-muted group-hover:text-primary-container transition-colors">01 / UNDERSTAND</span>
+<h3 class="font-headline-md text-headline-md text-text-primary">Ingest Signals</h3>
+<div class="mt-auto pt-8 flex gap-2">
+<span class="px-2 py-1 border border-outline-variant font-label-caps text-[9px] text-text-muted">EPSS</span>
+<span class="px-2 py-1 border border-outline-variant font-label-caps text-[9px] text-text-muted">KEV</span>
+</div>
+</div>
+<!-- Match -->
+<div class="p-8 border-b md:border-b-0 md:border-r border-outline-variant flex flex-col gap-4 hover:bg-surface-container-low transition-colors group">
+<span class="font-label-caps text-label-caps text-text-muted group-hover:text-primary-container transition-colors">02 / MATCH</span>
+<h3 class="font-headline-md text-headline-md text-text-primary">Apply Context</h3>
+<div class="mt-auto pt-8">
+<div class="w-full h-1 bg-surface-variant"><div class="w-1/2 h-full bg-outline"></div></div>
+</div>
+</div>
+<!-- Prioritise -->
+<div class="p-8 border-b md:border-b-0 md:border-r border-outline-variant flex flex-col gap-4 hover:bg-surface-container-low transition-colors group">
+<span class="font-label-caps text-label-caps text-text-muted group-hover:text-risk-high transition-colors">03 / PRIORITISE</span>
+<h3 class="font-headline-md text-headline-md text-text-primary">Rank Risk</h3>
+<div class="mt-auto pt-8 flex items-end h-12 gap-1">
+<div class="w-1/3 bg-surface-variant h-1/3"></div>
+<div class="w-1/3 bg-outline h-2/3"></div>
+<div class="w-1/3 bg-risk-high h-full"></div>
+</div>
+</div>
+<!-- Explain -->
+<div class="p-8 border-b md:border-b-0 md:border-r border-outline-variant flex flex-col gap-4 hover:bg-surface-container-low transition-colors group">
+<span class="font-label-caps text-label-caps text-text-muted group-hover:text-text-primary transition-colors">04 / EXPLAIN</span>
+<h3 class="font-headline-md text-headline-md text-text-primary">Generate Insight</h3>
+<div class="mt-auto pt-8 space-y-2">
+<div class="h-2 w-full bg-surface-variant"></div>
+<div class="h-2 w-4/5 bg-surface-variant"></div>
+</div>
+</div>
+<!-- Act -->
+<div class="p-8 bg-surface-container-low flex flex-col gap-4 border-l-2 border-primary-container group">
+<span class="font-label-caps text-label-caps text-primary-container">05 / ACT</span>
+<h3 class="font-headline-md text-headline-md text-text-primary">Deploy Fix</h3>
+<button class="mt-auto flex items-center justify-between border border-primary-container text-primary-container p-2 font-label-caps hover:bg-primary-container hover:text-background transition-colors">
+                        VIEW TICKET <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-background dark:bg-surface border-t border-outline-variant dark:border-outline-variant w-full py-section-gap px-margin mt-section-gap">
+<div class="flex flex-col md:flex-row justify-between items-center w-full max-w-[1600px] mx-auto gap-8">
+<span class="font-headline-md text-headline-md text-on-surface dark:text-on-background tracking-tighter">VULTRA</span>
+<div class="flex flex-wrap gap-6 justify-center">
+<a class="font-label-caps text-label-caps text-text-muted dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Privacy</a>
+<a class="font-label-caps text-label-caps text-text-muted dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Terms</a>
+<a class="font-label-caps text-label-caps text-text-muted dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">API Status</a>
+<a class="font-label-caps text-label-caps text-text-muted dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Security Documentation</a>
+</div>
+<span class="font-label-caps text-label-caps text-text-muted dark:text-on-surface-variant text-center md:text-right">
+                © 2024 VULTRA CYBER INTELLIGENCE. ALL RIGHTS RESERVED.
+            </span>
+</div>
+</footer>
+</body></html>
