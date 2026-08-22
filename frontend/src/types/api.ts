@@ -427,3 +427,104 @@ export interface RemediationSummary {
   overdue: number;
 }
 
+// --- Phase 10: Continuous Risk Watch + Smart Alerts ---
+export type AlertSeverity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'INFO';
+
+export interface SmartAlert {
+  alert_id: string;
+  org_id: string;
+  alert_type: string;
+  severity: AlertSeverity;
+  title: string;
+  cve_id?: string | null;
+  asset_id?: string | null;
+  asset_name?: string | null;
+  product?: string | null;
+  previous_state: string;
+  current_state: string;
+  what_changed: string;
+  why_it_matters: string;
+  next_action: string;
+  previous_rank?: number | null;
+  current_rank?: number | null;
+  previous_score?: number | null;
+  current_score?: number | null;
+  is_read: boolean;
+  is_dismissed: boolean;
+  created_at: string;
+}
+
+export interface AlertListResponse {
+  org_id: string;
+  alerts: SmartAlert[];
+  total_count: number;
+  unread_count: number;
+}
+
+export interface AlertSummary {
+  org_id: string;
+  total: number;
+  unread: number;
+  critical: number;
+  high: number;
+  medium: number;
+  info: number;
+}
+
+export interface RiskCheckResponse {
+  org_id: string;
+  status: string;
+  message: string;
+  snapshot_id: string;
+  new_alerts_count: number;
+  priority_changes_count: number;
+  new_top5_count: number;
+  previous_posture?: string | null;
+  current_posture: string;
+  alerts: SmartAlert[];
+}
+
+export interface WhyRiskChangedDriver {
+  category: string;
+  title: string;
+  detail: string;
+  severity: string;
+}
+
+export interface WhyRiskChangedResponse {
+  org_id: string;
+  has_changed: boolean;
+  previous_posture: string;
+  current_posture: string;
+  posture_direction: string;
+  last_check_timestamp: string;
+  baseline_timestamp?: string | null;
+  main_drivers: WhyRiskChangedDriver[];
+  top_actions: string[];
+}
+
+export interface SnapshotComparisonItemDiff {
+  cve_id: string;
+  product: string;
+  asset_name?: string | null;
+  previous_rank?: number | null;
+  current_rank?: number | null;
+  previous_score?: number | null;
+  current_score?: number | null;
+  rank_delta: number;
+  change_reasons: string[];
+}
+
+export interface SnapshotComparisonResponse {
+  org_id: string;
+  snapshot_a_id: string;
+  snapshot_b_id: string;
+  snapshot_a_timestamp: string;
+  snapshot_b_timestamp: string;
+  rank_shifts: SnapshotComparisonItemDiff[];
+  new_vulnerabilities: string[];
+  removed_vulnerabilities: string[];
+  remediation_impacts: string[];
+}
+
+

@@ -1,5 +1,7 @@
 import {
   AIExplanationResponse,
+  AlertListResponse,
+  AlertSummary,
   AssetCreateRequest,
   AssetDetailResponse,
   AssetListResponse,
@@ -18,10 +20,14 @@ import {
   RemediationRecord,
   RemediationSummary,
   RemediationUpdateRequest,
+  RiskCheckResponse,
+  SmartAlert,
+  SnapshotComparisonResponse,
   TriageResponse,
   WeightModifiers,
   WhatIfResponse,
   WhyNotResponse,
+  WhyRiskChangedResponse,
 } from '../types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
@@ -264,9 +270,83 @@ class ApiClient {
       }
     );
   }
+
+  // --- Phase 10: Continuous Risk Watch & Smart Alerts ---
+  async runRiskCheck(orgId: string): Promise<RiskCheckResponse> {
+    return this.request<RiskCheckResponse>(
+      `/organizations/${encodeURIComponent(orgId)}/risk-check`,
+      {
+        method: 'POST',
+      }
+    );
+  }
+
+  async getAlerts(
+    orgId: string,
+    params?: { severity?: string; alert_type?: string; unread_only?: boolean }
+  ): Promise<AlertListResponse> {
+    const query = new URLSearchParams();
+    if (params?.severity) query.append('severity', params.severity);
+    if (params?.alert_type) query.append('alert_type', params.alert_type);
+    if (params?.unread_only) query.append('unread_only', 'true');
+
+    const qs = query.toString() ? `?${query.toString()}` : '';
+    return this.request<AlertListResponse>(
+      `/organizations/${encodeURIComponent(orgId)}/alerts${qs}`
+    );
+  }
+
+  async getAlertSummary(orgId: string): Promise<AlertSummary> {
+    return this.request<AlertSummary>(
+      `/organizations/${encodeURIComponent(orgId)}/alerts/summary`
+    );
+  }
+
+  async getAlert(orgId: string, alertId: string): Promise<SmartAlert> {
+    return this.request<SmartAlert>(
+      `/organizations/${encodeURIComponent(orgId)}/alerts/${encodeURIComponent(alertId)}`
+    );
+  }
+
+  async markAlertRead(alertId: string, orgId?: string): Promise<{ status: string; is_read: boolean }> {
+    const endpoint = orgId
+      ? `/organizations/${encodeURIComponent(orgId)}/alerts/${encodeURIComponent(alertId)}/read`
+      : `/alerts/${encodeURIComponent(alertId)}/read`;
+    return this.request<{ status: string; is_read: boolean }>(endpoint, {
+      method: 'POST',
+    });
+  }
+
+  async dismissAlert(alertId: string, orgId?: string): Promise<{ status: string; is_dismissed: boolean }> {
+    const endpoint = orgId
+      ? `/organizations/${encodeURIComponent(orgId)}/alerts/${encodeURIComponent(alertId)}/dismiss`
+      : `/alerts/${encodeURIComponent(alertId)}/dismiss`;
+    return this.request<{ status: string; is_dismissed: boolean }>(endpoint, {
+      method: 'POST',
+    });
+  }
+
+  async getWhyRiskChanged(orgId: string): Promise<WhyRiskChangedResponse> {
+    return this.request<WhyRiskChangedResponse>(
+      `/organizations/${encodeURIComponent(orgId)}/why-risk-changed`
+    );
+  }
+
+  async compareSnapshots(
+    orgId: string,
+    snapshotA: string,
+    snapshotB: string
+  ): Promise<SnapshotComparisonResponse> {
+    return this.request<SnapshotComparisonResponse>(
+      `/organizations/${encodeURIComponent(orgId)}/snapshots/compare?snapshot_a=${encodeURIComponent(
+        snapshotA
+      )}&snapshot_b=${encodeURIComponent(snapshotB)}`
+    );
+  }
 }
 
 export const api = new ApiClient();
+
 
 
 

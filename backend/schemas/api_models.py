@@ -403,3 +403,141 @@ class RemediationSummaryResponse(BaseModel):
     risk_accepted: int = Field(0, description="Items in RISK_ACCEPTED status")
     overdue: int = Field(0, description="Items overdue against target due date")
 
+
+# --- Phase 10: Continuous Risk Watch + Smart Alerts ---
+class SnapshotItemSchema(BaseModel):
+    cve_id: str = Field(..., description="CVE identifier")
+    rank: int = Field(..., description="Position in ranking (1-indexed)")
+    score: float = Field(..., description="Deterministic priority score (0-100)")
+    priority: str = Field(..., description="Priority tier: URGENT, HIGH, MEDIUM, LOW")
+    confidence: str = Field("HIGH", description="Confidence level: HIGH, MEDIUM, LOW")
+    matched_asset_id: Optional[str] = Field(None, description="Matched asset identifier")
+    asset_name: Optional[str] = Field(None, description="Matched asset display name")
+    product: str = Field(..., description="Matched product name")
+    version: Optional[str] = Field("unknown", description="Installed software version")
+    exposure: str = Field("internet-facing", description="Network perimeter exposure")
+    importance: str = Field("critical", description="Business criticality tier")
+    cvss: float = Field(..., description="CVSS Base Score")
+    kev: bool = Field(False, description="CISA KEV weaponised flag")
+    epss: float = Field(0.0, description="EPSS exploit probability")
+    match_status: str = Field("MATCH", description="MATCH, NEEDS_VERIFICATION, EXCLUDE")
+    remediation_status: Optional[str] = Field("NONE", description="Active remediation status if tracked")
+
+
+class AnalysisSnapshotSchema(BaseModel):
+    snapshot_id: str = Field(..., description="Unique snapshot identifier, e.g. SNP-001")
+    org_id: str = Field(..., description="Associated organisation identifier")
+    created_at: str = Field(..., description="ISO 8601 creation timestamp")
+    analysis_version: str = Field("1.0", description="Triage engine version")
+    total_vulnerabilities: int = Field(0, description="Total CVEs evaluated")
+    matched_count: int = Field(0, description="Number of applicable matching CVEs")
+    top5_cves: list[str] = Field(default_factory=list, description="Top 5 CVE identifiers in rank order")
+    active_critical_count: int = Field(0, description="Count of active critical priority findings")
+    active_high_count: int = Field(0, description="Count of active high priority findings")
+    overall_risk_posture: str = Field("MEDIUM", description="Overall risk posture: LOW, MEDIUM, HIGH, CRITICAL")
+    items: list[SnapshotItemSchema] = Field(default_factory=list, description="Ranked analysis items")
+
+
+class SnapshotListResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation identifier")
+    snapshots: list[AnalysisSnapshotSchema] = Field(..., description="Historical snapshots")
+    total_count: int = Field(..., description="Total snapshots stored")
+
+
+class SmartAlertSchema(BaseModel):
+    alert_id: str = Field(..., description="Unique alert identifier, e.g. ALT-001")
+    org_id: str = Field(..., description="Associated organisation identifier")
+    alert_type: str = Field(..., description="Alert classification type")
+    severity: str = Field("HIGH", description="Alert severity: CRITICAL, HIGH, MEDIUM, INFO")
+    title: str = Field(..., description="Concise human-readable alert title")
+    cve_id: Optional[str] = Field(None, description="Related CVE if item-specific")
+    asset_id: Optional[str] = Field(None, description="Related Asset ID")
+    asset_name: Optional[str] = Field(None, description="Related Asset name")
+    product: Optional[str] = Field(None, description="Target product")
+    previous_state: str = Field(..., description="Description of previous condition")
+    current_state: str = Field(..., description="Description of current condition")
+    what_changed: str = Field(..., description="Concise statement of detected delta")
+    why_it_matters: str = Field(..., description="Operational relevance and business impact")
+    next_action: str = Field(..., description="Authoritative defensive next step")
+    previous_rank: Optional[int] = Field(None, description="Previous rank before change")
+    current_rank: Optional[int] = Field(None, description="Current rank after change")
+    previous_score: Optional[float] = Field(None, description="Previous deterministic score")
+    current_score: Optional[float] = Field(None, description="Current deterministic score")
+    is_read: bool = Field(False, description="Read state flag")
+    is_dismissed: bool = Field(False, description="Dismissed flag")
+    created_at: str = Field(..., description="ISO 8601 creation timestamp")
+
+
+class AlertListResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation identifier")
+    alerts: list[SmartAlertSchema] = Field(..., description="List of smart alerts")
+    total_count: int = Field(..., description="Total alerts matching filter")
+    unread_count: int = Field(0, description="Count of unread alerts")
+
+
+class AlertSummaryResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation identifier")
+    total: int = Field(0, description="Total active alerts")
+    unread: int = Field(0, description="Unread alerts count")
+    critical: int = Field(0, description="Critical severity alerts")
+    high: int = Field(0, description="High severity alerts")
+    medium: int = Field(0, description="Medium severity alerts")
+    info: int = Field(0, description="Info severity alerts")
+
+
+class RiskCheckResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation identifier")
+    status: str = Field(..., description="Status: 'BASELINE_CREATED', 'RISK_CHANGE_DETECTED', 'NO_CHANGE'")
+    message: str = Field(..., description="Human-readable execution result")
+    snapshot_id: str = Field(..., description="ID of created snapshot")
+    new_alerts_count: int = Field(0, description="Number of newly generated alerts")
+    priority_changes_count: int = Field(0, description="Number of CVE rank shifts detected")
+    new_top5_count: int = Field(0, description="Number of new entrants into Top 5")
+    previous_posture: Optional[str] = Field(None, description="Previous overall posture")
+    current_posture: str = Field("MEDIUM", description="Current overall posture")
+    alerts: list[SmartAlertSchema] = Field(default_factory=list, description="Newly generated alerts")
+
+
+class WhyRiskChangedDriver(BaseModel):
+    category: str = Field(..., description="Category: TOP5, KEV, EPSS, ASSET, REMEDIATION, POSTURE")
+    title: str = Field(..., description="Driver heading")
+    detail: str = Field(..., description="Factual driver explanation")
+    severity: str = Field("HIGH", description="CRITICAL, HIGH, MEDIUM, INFO")
+
+
+class WhyRiskChangedResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation identifier")
+    has_changed: bool = Field(..., description="True if posture or rank shifted since baseline")
+    previous_posture: str = Field("MEDIUM", description="Previous risk posture")
+    current_posture: str = Field("MEDIUM", description="Current risk posture")
+    posture_direction: str = Field("STABLE", description="INCREASING, DECREASING, STABLE")
+    last_check_timestamp: str = Field(..., description="Timestamp of latest risk evaluation")
+    baseline_timestamp: Optional[str] = Field(None, description="Timestamp of comparison baseline")
+    main_drivers: list[WhyRiskChangedDriver] = Field(default_factory=list, description="Key causal factors")
+    top_actions: list[str] = Field(default_factory=list, description="Recommended next defensive steps")
+
+
+class SnapshotComparisonItemDiff(BaseModel):
+    cve_id: str = Field(..., description="CVE identifier")
+    product: str = Field(..., description="Target product")
+    asset_name: Optional[str] = Field(None, description="Asset display name")
+    previous_rank: Optional[int] = Field(None, description="Rank in previous snapshot")
+    current_rank: Optional[int] = Field(None, description="Rank in current snapshot")
+    previous_score: Optional[float] = Field(None, description="Score in previous snapshot")
+    current_score: Optional[float] = Field(None, description="Score in current snapshot")
+    rank_delta: int = Field(0, description="Rank shift (positive = moved higher priority)")
+    change_reasons: list[str] = Field(default_factory=list, description="Detected factual reasons for shift")
+
+
+class SnapshotComparisonResponse(BaseModel):
+    org_id: str = Field(..., description="Organisation identifier")
+    snapshot_a_id: str = Field(..., description="Base snapshot ID")
+    snapshot_b_id: str = Field(..., description="Target snapshot ID")
+    snapshot_a_timestamp: str = Field(..., description="Base timestamp")
+    snapshot_b_timestamp: str = Field(..., description="Target timestamp")
+    rank_shifts: list[SnapshotComparisonItemDiff] = Field(default_factory=list, description="Rank shifts")
+    new_vulnerabilities: list[str] = Field(default_factory=list, description="Newly entered CVEs")
+    removed_vulnerabilities: list[str] = Field(default_factory=list, description="Removed / excluded CVEs")
+    remediation_impacts: list[str] = Field(default_factory=list, description="Remediation outcomes")
+
+

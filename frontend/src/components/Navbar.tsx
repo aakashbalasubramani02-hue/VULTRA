@@ -1,8 +1,8 @@
 import React from 'react';
-import { Shield, Activity, GitCompare, HelpCircle, BookOpen, Layers, Plus, Server, ShieldCheck } from 'lucide-react';
+import { Shield, Activity, GitCompare, HelpCircle, BookOpen, Layers, Plus, Server, ShieldCheck, ShieldAlert } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export type NavView = 'command' | 'triage' | 'inventory' | 'remediation' | 'compare' | 'whynot' | 'methodology';
+export type NavView = 'command' | 'triage' | 'inventory' | 'remediation' | 'alerts' | 'compare' | 'whynot' | 'methodology';
 
 interface NavbarProps {
   currentView: NavView;
@@ -10,6 +10,7 @@ interface NavbarProps {
   isBackendConnected: boolean;
   selectedOrgId: string;
   onOpenRegister?: () => void;
+  unreadAlertsCount?: number;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -17,12 +18,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   onViewChange,
   isBackendConnected,
   onOpenRegister,
+  unreadAlertsCount = 0,
 }) => {
   const navItems = [
     { id: 'command' as NavView, label: 'Overview', icon: Layers },
     { id: 'triage' as NavView, label: 'Priorities', icon: Activity },
     { id: 'inventory' as NavView, label: 'Asset Inventory', icon: Server },
     { id: 'remediation' as NavView, label: 'Remediation', icon: ShieldCheck },
+    { id: 'alerts' as NavView, label: 'Alerts', icon: ShieldAlert, badge: unreadAlertsCount > 0 ? unreadAlertsCount : undefined },
     { id: 'compare' as NavView, label: 'Comparison', icon: GitCompare },
     { id: 'whynot' as NavView, label: 'Negative Test', icon: HelpCircle },
     { id: 'methodology' as NavView, label: 'Methodology', icon: BookOpen },
@@ -45,8 +48,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </span>
           </div>
 
-          <div className="hidden lg:flex items-center gap-2 pl-4 border-l border-[#3b494c]">
-            <span className="font-label-caps text-[10px] text-[#bac9cc] tracking-widest uppercase">
+          <div className="hidden lg:flex flex-col border-l border-[#3b494c] pl-4">
+            <span className="text-[9px] font-label-caps uppercase tracking-widest text-[#bac9cc] font-bold">
+              Personalised Intelligence
+            </span>
+            <span className="text-[8px] font-mono text-[#606D7A]">
               Precision Risk Intelligence
             </span>
           </div>
@@ -60,7 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 key={item.id}
                 onClick={() => onViewChange(item.id)}
-                className={`relative px-4 py-2 font-label-caps text-[11px] tracking-widest uppercase transition-colors cursor-pointer ${
+                className={`relative px-4 py-2 font-label-caps text-[11px] tracking-widest uppercase transition-colors cursor-pointer flex items-center gap-1.5 ${
                   isActive
                     ? 'text-[#00E5FF] font-bold'
                     : 'text-[#606D7A] hover:text-[#F5F7FA]'
@@ -74,6 +80,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                   />
                 )}
                 <span>{item.label}</span>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span className="px-1.5 py-0.5 bg-[#FF3B30] text-[#F5F7FA] text-[9px] font-mono font-bold rounded-full">
+                    {item.badge}
+                  </span>
+                )}
               </button>
             );
           })}

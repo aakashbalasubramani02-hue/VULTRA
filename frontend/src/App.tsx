@@ -4,6 +4,7 @@ import { CommandCenterView } from './views/CommandCenterView';
 import { TriageView } from './views/TriageView';
 import { InventoryView } from './views/InventoryView';
 import { RemediationView } from './views/RemediationView';
+import { AlertCenterView } from './views/AlertCenterView';
 import { CompareView } from './views/CompareView';
 import { WhyNotView } from './views/WhyNotView';
 import { MethodologyView } from './views/MethodologyView';
@@ -23,6 +24,7 @@ export const App: React.FC = () => {
   const [selectedOrgId, setSelectedOrgId] = useState<string>('ORG-001');
   const [profileDetail, setProfileDetail] = useState<ProfileDetailResponse | null>(null);
   const [triageData, setTriageData] = useState<TriageResponse | null>(null);
+  const [unreadAlertsCount, setUnreadAlertsCount] = useState<number>(0);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
@@ -78,10 +80,14 @@ export const App: React.FC = () => {
     Promise.all([
       api.getProfileDetail(orgId),
       api.getTriage(orgId),
+      api.getAlertSummary(orgId).catch(() => ({ unread: 0 })),
     ])
-      .then(([detail, triage]) => {
+      .then(([detail, triage, alertSum]) => {
         setProfileDetail(detail);
         setTriageData(triage);
+        if (alertSum && typeof alertSum.unread === 'number') {
+          setUnreadAlertsCount(alertSum.unread);
+        }
         setIsBackendConnected(true);
       })
       .catch((err) => {
@@ -118,6 +124,7 @@ export const App: React.FC = () => {
         isBackendConnected={isBackendConnected}
         selectedOrgId={selectedOrgId}
         onOpenRegister={() => setIsRegisterOpen(true)}
+        unreadAlertsCount={unreadAlertsCount}
       />
 
       {/* Backend Offline Warning Banner */}
@@ -147,6 +154,7 @@ export const App: React.FC = () => {
               onGoToCompare={() => setCurrentView('compare')}
               onGoToInventory={() => setCurrentView('inventory')}
               onGoToRemediation={() => setCurrentView('remediation')}
+              onGoToAlerts={() => setCurrentView('alerts')}
               isLoading={isLoading}
             />
           )}
@@ -180,6 +188,15 @@ export const App: React.FC = () => {
               key="remediation"
               selectedProfileId={selectedOrgId}
               onNavigateToTriage={() => setCurrentView('triage')}
+            />
+          )}
+
+          {currentView === 'alerts' && (
+            <AlertCenterView
+              key="alerts"
+              selectedProfileId={selectedOrgId}
+              onNavigateToTriage={() => setCurrentView('triage')}
+              onInitiateRemediation={() => setCurrentView('remediation')}
             />
           )}
 

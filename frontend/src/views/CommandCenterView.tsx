@@ -27,6 +27,7 @@ interface CommandCenterViewProps {
   onGoToCompare: () => void;
   onGoToInventory?: () => void;
   onGoToRemediation?: () => void;
+  onGoToAlerts?: () => void;
   isLoading: boolean;
 }
 
@@ -42,6 +43,7 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
   onGoToCompare,
   onGoToInventory,
   onGoToRemediation,
+  onGoToAlerts,
   isLoading,
 }) => {
   return (
@@ -305,7 +307,7 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
       )}
 
       {/* Feature Navigation Cards */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div
           onClick={onGoToTriage}
           className="p-6 bg-[#11141B] border border-[#1E2530] hover:border-[#00E5FF] transition-all cursor-pointer group"
@@ -314,7 +316,7 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
             <Activity className="h-5 w-5" />
           </div>
           <h4 className="text-base font-bold text-[#F5F7FA] group-hover:text-[#00E5FF] transition-colors flex items-center justify-between">
-            <span>Triage Decisions</span>
+            <span>Triage Priorities</span>
             <ArrowRight className="h-4 w-4 text-[#00E5FF] group-hover:translate-x-1 transition-transform" />
           </h4>
           <p className="text-xs text-[#606D7A] mt-2 leading-relaxed">
@@ -323,14 +325,30 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
         </div>
 
         <div
+          onClick={onGoToAlerts}
+          className="p-6 bg-[#11141B] border border-[#1E2530] hover:border-[#00E5FF] transition-all cursor-pointer group"
+        >
+          <div className="w-10 h-10 bg-[#0c0e12] border border-[#3b494c] flex items-center justify-center text-[#00E5FF] mb-4 group-hover:border-[#00E5FF]">
+            <ShieldAlert className="h-5 w-5" />
+          </div>
+          <h4 className="text-base font-bold text-[#F5F7FA] group-hover:text-[#00E5FF] transition-colors flex items-center justify-between">
+            <span>Smart Alerts</span>
+            <ArrowRight className="h-4 w-4 text-[#00E5FF] group-hover:translate-x-1 transition-transform" />
+          </h4>
+          <p className="text-xs text-[#606D7A] mt-2 leading-relaxed">
+            Continuous threat watch detecting KEV weaponisation, rank escalations, and perimeter context shifts.
+          </p>
+        </div>
+
+        <div
           onClick={onGoToWhyNot}
           className="p-6 bg-[#11141B] border border-[#1E2530] hover:border-[#FF3B30] transition-all cursor-pointer group"
         >
           <div className="w-10 h-10 bg-[#0c0e12] border border-[#3b494c] flex items-center justify-center text-[#FF3B30] mb-4 group-hover:border-[#FF3B30]">
-            <ShieldAlert className="h-5 w-5" />
+            <Lock className="h-5 w-5" />
           </div>
           <h4 className="text-base font-bold text-[#F5F7FA] group-hover:text-[#FF3B30] transition-colors flex items-center justify-between">
-            <span>Why Not? (Negative Test)</span>
+            <span>Why Not?</span>
             <ArrowRight className="h-4 w-4 text-[#FF3B30] group-hover:translate-x-1 transition-transform" />
           </h4>
           <p className="text-xs text-[#606D7A] mt-2 leading-relaxed">

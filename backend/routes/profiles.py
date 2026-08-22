@@ -246,6 +246,9 @@ def delete_organization(profile_id: str):
                     "message": f"Organisation profile '{profile_id}' not found.",
                 },
             )
+        from backend.services.risk_watch_service import risk_watch_service
+        risk_watch_service.purge_org_data(profile_id)
+
         return {
             "status": "deleted",
             "profile_id": profile_id,
