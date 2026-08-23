@@ -111,12 +111,22 @@ async def root():
 async def serve_spa(full_path: str):
     if full_path.startswith("api") or full_path.startswith("docs") or full_path.startswith("redoc") or full_path.startswith("openapi.json"):
         raise HTTPException(status_code=404, detail="Not Found")
-    file_path = os.path.join(frontend_dist, full_path)
+    # Strict traversal sequence check
+    if ".." in full_path or "%2e" in full_path.lower():
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied: invalid path sequence.")
+    abs_dist = os.path.abspath(frontend_dist)
+    file_path = os.path.abspath(os.path.join(frontend_dist, full_path))
+    if not file_path.startswith(abs_dist):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied: path traversal attempt detected.")
     if os.path.isfile(file_path):
         return FileResponse(file_path)
-    index_html = os.path.join(frontend_dist, "index.html")
-    if os.path.isfile(index_html):
-        return FileResponse(index_html)
+    # Whitelist of valid frontend SPA client-side routes
+    known_spa_routes = {"", "triage", "inventory", "remediation", "alerts", "compare", "whynot", "methodology", "command"}
+    first_segment = full_path.strip("/").split("/")[0] if full_path.strip("/") else ""
+    if first_segment in known_spa_routes:
+        index_html = os.path.join(frontend_dist, "index.html")
+        if os.path.isfile(index_html):
+            return FileResponse(index_html)
     raise HTTPException(status_code=404, detail="Not Found")
 
 

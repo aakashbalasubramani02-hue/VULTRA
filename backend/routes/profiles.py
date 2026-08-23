@@ -247,7 +247,9 @@ def delete_organization(profile_id: str):
                 },
             )
         from backend.services.risk_watch_service import risk_watch_service
+        from backend.services.remediation_service import remediation_service
         risk_watch_service.purge_org_data(profile_id)
+        remediation_service.purge_org_data(profile_id)
 
         return {
             "status": "deleted",

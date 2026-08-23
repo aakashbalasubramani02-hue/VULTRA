@@ -267,9 +267,9 @@ export const DecisionTraceModal: React.FC<DecisionTraceModalProps> = ({
                           {node.details.map((d, i) => (
                             <div key={i} className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 py-1 border-b border-[#1E2530]/60 last:border-0">
                               <span className="text-[#606D7A] text-[10px] uppercase">{d.label}:</span>
-                              {d.value.startsWith('http') ? (
+                              {/^https?:\/\//i.test(d.value.trim()) ? (
                                 <a
-                                  href={d.value}
+                                  href={d.value.trim()}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-[#00E5FF] hover:underline flex items-center gap-1 break-all"

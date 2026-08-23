@@ -415,6 +415,7 @@ class SnapshotItemSchema(BaseModel):
     asset_name: Optional[str] = Field(None, description="Matched asset display name")
     product: str = Field(..., description="Matched product name")
     version: Optional[str] = Field("unknown", description="Installed software version")
+    environment: str = Field("production", description="Asset deployment environment: production, staging, internal")
     exposure: str = Field("internet-facing", description="Network perimeter exposure")
     importance: str = Field("critical", description="Business criticality tier")
     cvss: float = Field(..., description="CVSS Base Score")

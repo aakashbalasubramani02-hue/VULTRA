@@ -30,6 +30,7 @@ def test_remediation_full_lifecycle():
     initial_gold_hash = file_sha256(GOLD_FILE)
 
     org_id = "ORG-001"
+    remediation_service.purge_org_data(org_id)
     # Find Top 1 CVE for ORG-001
     triage_res = client.get(f"/api/triage/{org_id}")
     assert triage_res.status_code == 200

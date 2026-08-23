@@ -120,6 +120,7 @@ class RiskWatchService:
                     asset_name=matched_tech.asset_name,
                     product=matched_tech.product,
                     version=matched_tech.version or "unknown",
+                    environment=matched_tech.environment or "production",
                     exposure=r.exposure or "internet-facing",
                     importance=r.importance or "critical",
                     cvss=r.signals.cvss,

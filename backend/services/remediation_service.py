@@ -506,5 +506,13 @@ class RemediationService:
 
         return RemediationSummaryResponse(org_id=org_id, **summary)
 
+    def purge_org_data(self, org_id: str) -> None:
+        """Purge all remediation records associated with an organisation."""
+        raw_data = self._read_raw()
+        rems = raw_data.get("remediations", [])
+        rems = [r for r in rems if r.get("org_id", "").upper() != org_id.upper()]
+        raw_data["remediations"] = rems
+        self._save_raw(raw_data)
+
 
 remediation_service = RemediationService()

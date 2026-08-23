@@ -174,12 +174,12 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
                         {evidence.source_facts.source_file} • {evidence.source_facts.snapshot_date}
                       </span>
                     </div>
-                    {evidence.source_facts.reference_url && (
+                    {evidence.source_facts.reference_url && /^https?:\/\//i.test(evidence.source_facts.reference_url.trim()) && (
                       <div className="col-span-2 pt-1">
                         <a
-                          href={evidence.source_facts.reference_url}
+                          href={evidence.source_facts.reference_url.trim()}
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 text-xs text-[#00E5FF] hover:underline font-label-caps tracking-wider uppercase"
                         >
                           <span>Open Official NVD Advisory Reference</span>
